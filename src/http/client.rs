@@ -14,13 +14,14 @@ pub struct HttpClient {
 }
 
 impl HttpClient {
-	pub fn new<A: ToSocketAddrs>(addr: A) -> HttpClient {
+	pub fn new<A: ToSocketAddrs>(addr: A) -> Result<HttpClient, Error> {
+		let address = option!(try!(addr.to_socket_addrs()).next(), "Cannot resolve address");
 		let client = HttpClient{
-			addr: addr.to_socket_addrs().unwrap().next().unwrap(),
+			addr: address,
 			header: HashMap::new(),
 			stream: None
 		};
-		return client;
+		return Ok(client);
 	}
 	
 	fn connect(&mut self) -> Result<&mut HttpStream, Error> {
@@ -39,8 +40,8 @@ impl HttpClient {
 			try!(writer.write(b"\r\n"));
 			
 			//TODO: Write header and length
-			if header.is_some() {
-				for (k, v) in header.unwrap() {
+			if let Some(hdr) = header {
+				for (k, v) in hdr {
 					try!(writer.write(k.as_bytes()));
 					try!(writer.write(b": "));
 					try!(writer.write(v.as_bytes()));
@@ -63,8 +64,8 @@ impl HttpClient {
 	pub fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<&str, &str>>, data: Option<&[u8]>) -> Result<HttpReply, Error> {
 		{
 			let mut writer = try!(self.send_stream(method, path, header));
-			if data.is_some() {
-				try!(writer.write(data.unwrap()));
+			if let Some(d) = data {
+				try!(writer.write(d));
 			}
 			try!(writer.flush());
 		}

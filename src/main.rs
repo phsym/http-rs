@@ -1,17 +1,15 @@
 use std::io::prelude::*;
-use std::collections::HashMap;
 use std::str;
 
-mod http;
+#[macro_use]mod http;
 use http::methods::Method;
 use http::client::HttpClient;
 
 fn main() {
-	
-	let mut http = HttpClient::new("www.google.fr:80");
+	let mut http = HttpClient::new("www.google.fr:80").unwrap();
 //	let mut http = HttpClient::new("127.0.0.1:80");
-	let mut hdr = HashMap::new();
-	hdr.insert("test", "toto");
+	let hdr = map!("test" => "toto");
+	debug!("MAP : {:?}", hdr);
 	
 	match http.send(Method::GET, "/", Some(&hdr), Some(b"tatayoyo")) {
 		Ok(ref mut res) => {

@@ -1,9 +1,11 @@
 use std::net::{ToSocketAddrs, TcpStream};
 use std::io::{BufReader, BufWriter, Error};
 
+#[macro_use] pub mod macros;
 pub mod methods;
 pub mod client;
 pub mod messages;
+
 
 pub struct HttpStream {
 	sock: TcpStream,

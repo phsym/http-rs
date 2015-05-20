@@ -3,13 +3,6 @@ use std::collections::HashMap;
 use std::io::{BufReader, Error, ErrorKind, BufRead};
 use std::str::FromStr;
 
-macro_rules! option {
-	($expr:expr, $msg:expr) => (match $expr {
-		Some(val) => val,
-		None => return Err(Error::new(ErrorKind::Other, $msg))
-	})
-}
-
 pub struct HttpReply<'r> {
 	pub version: String,
 	pub code: u32,

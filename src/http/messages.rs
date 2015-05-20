@@ -55,6 +55,16 @@ impl <'r> HttpReply<'r> {
 		return Ok(reply);
 	}
 	
+	pub fn get_length(&self) -> Result<usize, Error> {
+		return match self.header.get("Content-Length") {
+			Some(s) => match usize::from_str(s) {
+				Ok(i) => Ok(i),
+				Err(e) => Err(Error::new(ErrorKind::Other, "Cannot parse number Content-Lentgh from header"))
+			},
+			None => Err(Error::new(ErrorKind::Other, "No Content-Length provided in header"))
+		};
+	}
+	
 	pub fn get_reader(&mut self) -> &mut BufReader<&'r TcpStream> {
 		return &mut self.reader;
 	}

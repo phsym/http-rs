@@ -15,7 +15,9 @@ fn main() {
 	
 	match http.send(Method::GET, "/", Some(&hdr), Some(b"tatayoyo")) {
 		Ok(ref mut res) => {
-			println!("code : {}", res.code);
+			println!("version = {}", res.version);
+			println!("code = {}", res.code);
+			println!("status = {}", res.status);
 			println!("Content length = {}", res.get_length().unwrap());
 			println!("\nHeader : ");
 			for (k, v) in &res.header {

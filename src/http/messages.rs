@@ -11,28 +11,34 @@ macro_rules! option {
 }
 
 pub struct HttpReply<'r> {
+	pub version: String,
 	pub code: u32,
+	pub status: String,
 	pub header: HashMap<String, String>,
 	reader: BufReader<&'r TcpStream>
 }
 
 impl <'r> HttpReply<'r> {
-	fn new(code: u32, header: HashMap<String, String>, reader: BufReader<&TcpStream>) -> HttpReply {
-		return HttpReply{code: code, header: header, reader: reader};
+	fn new(version: String, code: u32, status: String, header: HashMap<String, String>, reader: BufReader<&TcpStream>) -> HttpReply {
+		return HttpReply{version: version, code: code, status: status, header: header, reader: reader};
 	}
 	
 	pub fn parse(mut reader: BufReader<&TcpStream>) -> Result<HttpReply, Error> {
 		let mut code: u32;
+		let mut version: String;
+		let mut status: String;
 		let mut header = HashMap::new();
 		{
 			let mut line = String::new();
 			try!(reader.read_line(&mut line));
+			line = line.trim().to_string();
 			let mut splt = line.split(" ");
-			splt.next();
-			code = match u32::from_str(option!(splt.next(), "Cannot parse HTTP code")) {
+			version = option!(splt.next(), "HTTP version not found").to_string();
+			code = match u32::from_str(option!(splt.next(), "HTTP code not found")) {
 				Ok(n) => n,
 				Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot parse HTTP code : {}", e)))
 			};
+			status = option!(splt.next(), "HTTP status not found").to_string();
 			
 			//Parse header
 			let mut line = String::new();
@@ -51,7 +57,7 @@ impl <'r> HttpReply<'r> {
 			}
 		}
 		
-		let reply = HttpReply::new(code, header, reader);
+		let reply = HttpReply::new(version, code, status, header, reader);
 		return Ok(reply);
 	}
 	
@@ -59,7 +65,7 @@ impl <'r> HttpReply<'r> {
 		return match self.header.get("Content-Length") {
 			Some(s) => match usize::from_str(s) {
 				Ok(i) => Ok(i),
-				Err(e) => Err(Error::new(ErrorKind::Other, format!("Cannot parse number Content-Lentgh from header{}", e)))
+				Err(e) => Err(Error::new(ErrorKind::Other, format!("Cannot parse number Content-Lentgh from header : {}", e)))
 			},
 			None => Err(Error::new(ErrorKind::Other, "No Content-Length provided in header"))
 		};

@@ -22,11 +22,11 @@ impl HttpStream {
 		return Ok(HttpStream::new(try!(TcpStream::connect(addr))));
 	}
 	
-	fn to_reader(self) -> BufReader<TcpStream> {
-		return BufReader::new((self.sock));
+	fn get_reader(&mut self) -> BufReader<&TcpStream> {
+		return BufReader::new(&(self.sock));
 	}
 	
-	fn to_writer(&mut self) -> BufWriter<&TcpStream> {
+	fn get_writer(&mut self) -> BufWriter<&TcpStream> {
 		return BufWriter::new(&(self.sock));
 	}
 }

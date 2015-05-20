@@ -8,8 +8,8 @@ use http::client::HttpClient;
 
 fn main() {
 	
-	let http = HttpClient::new("www.google.fr:80");
-//	let http = HttpClient::new("127.0.0.1:80");
+	let mut http = HttpClient::new("www.google.fr:80");
+//	let mut http = HttpClient::new("127.0.0.1:80");
 	let mut hdr = HashMap::new();
 	hdr.insert("test", "toto");
 	

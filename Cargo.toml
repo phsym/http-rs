@@ -1,9 +1,9 @@
 [package]
 
-name = "hello_world"
+name = "rust-http"
 version = "0.0.1"
-authors = [ "Your name <you@example.com>" ]
+authors = [ "Pierre-Henri Symoneaux" ]
 
 [[bin]]
 
-name = "hello_world"
+name = "rust-http"

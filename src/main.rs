@@ -32,4 +32,6 @@ fn main() {
 		},
 		Err(ref e) => panic!("Cannot send request : {}", e)
 	}
+	
+	http.send(Method::GET, "/", Some(&hdr), Some(b"tatayoyo"));
 }

@@ -1,4 +1,4 @@
 [root]
-name = "hello_world"
+name = "rust-http"
 version = "0.0.1"
 

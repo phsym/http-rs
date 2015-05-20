@@ -5,11 +5,9 @@ pub mod methods;
 pub mod client;
 pub mod messages;
 
-
 pub struct HttpStream {
 	sock: TcpStream,
 }
-
 
 impl HttpStream {
 	fn new(sock: TcpStream) -> HttpStream {

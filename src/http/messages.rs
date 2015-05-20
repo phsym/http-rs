@@ -3,6 +3,13 @@ use std::collections::HashMap;
 use std::io::{BufReader, Error, ErrorKind, BufRead};
 use std::str::FromStr;
 
+macro_rules! option {
+	($expr:expr, $msg:expr) => (match $expr {
+		Some(val) => val,
+		None => return Err(Error::new(ErrorKind::Other, $msg))
+	})
+}
+
 pub struct HttpReply<'r> {
 	pub code: u32,
 	pub header: HashMap<String, String>,
@@ -22,7 +29,7 @@ impl <'r> HttpReply<'r> {
 			try!(reader.read_line(&mut line));
 			let mut splt = line.split(" ");
 			splt.next();
-			code = match u32::from_str(splt.next().unwrap()) {
+			code = match u32::from_str(option!(splt.next(), "Cannot parse HTTP code")) {
 				Ok(n) => n,
 				Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot parse HTTP code : {}", e)))
 			};
@@ -35,7 +42,10 @@ impl <'r> HttpReply<'r> {
 				if line.is_empty() {break;}
 				{
 					let mut splt = line.split(": ");
-					header.insert(splt.next().unwrap().to_string(), splt.next().unwrap().to_string());
+					header.insert(
+						option!(splt.next(), "Cannot parse header").to_string(),
+						option!(splt.next(), "Cannot parse header").to_string()
+						);
 				}
 				line.clear();
 			}

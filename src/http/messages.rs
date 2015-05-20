@@ -59,7 +59,7 @@ impl <'r> HttpReply<'r> {
 		return match self.header.get("Content-Length") {
 			Some(s) => match usize::from_str(s) {
 				Ok(i) => Ok(i),
-				Err(e) => Err(Error::new(ErrorKind::Other, "Cannot parse number Content-Lentgh from header"))
+				Err(e) => Err(Error::new(ErrorKind::Other, format!("Cannot parse number Content-Lentgh from header{}", e)))
 			},
 			None => Err(Error::new(ErrorKind::Other, "No Content-Length provided in header"))
 		};

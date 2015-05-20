@@ -1,7 +1,7 @@
-use std::net::{SocketAddr, ToSocketAddrs};
+use std::net::{SocketAddr, ToSocketAddrs, TcpStream};
 use std::io::prelude::*;
 use std::collections::HashMap;
-use std::io::Error;
+use std::io::{Error, BufWriter, ErrorKind};
 
 use super::*;
 use super::methods::Method;
@@ -28,10 +28,11 @@ impl HttpClient {
 		return Ok(self.stream.as_mut().unwrap());
 	}
 	
-	pub fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<&str, &str>>, data: Option<&[u8]>) -> Result<HttpReply, Error> {
+	pub fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<&str, &str>>) -> Result<BufWriter<&TcpStream>, Error> {
 		let mut stream = try!(self.connect());
+		let mut w = stream.get_writer();
 		{
-			let mut writer = &mut stream.get_writer();
+			let mut writer = &mut w;
 			try!(writer.write(method.as_bytes()));
 			try!(writer.write(b" "));
 			try!(writer.write(path.as_bytes()));
@@ -46,13 +47,27 @@ impl HttpClient {
 					try!(writer.write(b"\r\n"));
 				}
 			}
-			
 			try!(writer.write(b"\r\n"));
+		}
+		return Ok(w);
+	}
+	
+	pub fn get_reply(&mut self) -> Result<HttpReply, Error> {
+		let stream = match self.stream.as_mut() {
+			Some(s) => s,
+			None => return Err(Error::new(ErrorKind::NotConnected, "Cannot get reply since no stream is opened"))
+		};
+		return HttpReply::parse(stream.get_reader());
+	}
+	
+	pub fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<&str, &str>>, data: Option<&[u8]>) -> Result<HttpReply, Error> {
+		{
+			let mut writer = try!(self.send_stream(method, path, header));
 			if data.is_some() {
 				try!(writer.write(data.unwrap()));
 			}
 			try!(writer.flush());
 		}
-		return HttpReply::parse(stream.get_reader());
+		return self.get_reply();
 	}
 }

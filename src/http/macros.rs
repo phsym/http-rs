@@ -1,4 +1,4 @@
-/// Unwrap an `Option<T>` or return an `Err`
+/// Unwrap an `Option<T>` or return an `Err` if it's None
 #[macro_export]
 macro_rules! option {
 	($expr:expr, $msg:expr) => (match $expr {

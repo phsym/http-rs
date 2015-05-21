@@ -1,7 +1,7 @@
 use std::net::{ToSocketAddrs, TcpStream};
 use std::io::{BufReader, BufWriter, Error};
 
-#[macro_use] pub mod macros;
+#[macro_use] mod macros;
 pub mod methods;
 /// Module containing HTTP client implementations
 pub mod client;

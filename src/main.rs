@@ -1,7 +1,9 @@
+#[macro_use] extern crate http;
+
 use std::io::prelude::*;
 use std::str;
 
-#[macro_use]pub mod http;
+//#[macro_use]pub mod http;
 use http::methods::Method;
 use http::client::HttpClient;
 

@@ -1,11 +1,11 @@
 [package]
 
-name = "rust_http"
+name = "http-rs"
 version = "0.0.1"
 authors = [ "Pierre-Henri Symoneaux" ]
 
 [[bin]]
-name = "rust-http"
+name = "http-rs"
 
 [lib]
 name = "http"

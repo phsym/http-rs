@@ -22,7 +22,7 @@ impl <'r> HttpReply<'r> {
 	
 	/// Contruct a new HttpReply by parsing the input from `reader`
 	/// # Examples
-	/// ```no_run
+	/// ```ignore
 	/// # extern crate http;
 	/// use std::net::TcpStream;
 	/// use std::io::BufReader;

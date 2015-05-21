@@ -18,7 +18,7 @@ impl HttpClient {
 	
 	/// Create a new HTTP client that will send requests to `addr`.
 	/// # Example
-	/// ```
+	/// ```no_run
 	/// use http::client::HttpClient;
 	/// let mut client = HttpClient::new("www.google.com:80");
 	/// // Send some requests

@@ -12,7 +12,7 @@ macro_rules! option {
 /// This macro is quite similar to the `vec!` macro but is used to build
 /// a `HashMap`. The types will be deduced from the arguments.
 /// # Example
-/// ```
+/// ```ignore
 /// let my_map = map!{"a" => 1, "b" => 2};
 /// // Is similar to :
 /// use std::collections::HashMap;
@@ -41,7 +41,7 @@ macro_rules! map {
 /// The message will be formated with its additional arguments with `format!` macro and will
 /// contain a header with file name and line number
 /// # Example
-/// ```
+/// ```ignore
 /// debug!("This is a debug message");
 /// debug!("This is a debug {}", "message");
 /// ```

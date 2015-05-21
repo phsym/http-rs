@@ -1,7 +1,7 @@
 use std::io::prelude::*;
 use std::str;
 
-#[macro_use]mod http;
+#[macro_use]pub mod http;
 use http::methods::Method;
 use http::client::HttpClient;
 

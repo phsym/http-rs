@@ -3,6 +3,10 @@ use std::collections::HashMap;
 use std::io::{BufReader, Error, ErrorKind, BufRead};
 use std::str::FromStr;
 
+/// A structure that represents an HTTP reply
+///
+/// It contains an already parsed header information, and offers
+/// a `BufReader` to read reply content
 pub struct HttpReply<'r> {
 	pub version: String,
 	pub code: u32,
@@ -16,6 +20,18 @@ impl <'r> HttpReply<'r> {
 		return HttpReply{version: version, code: code, status: status, header: header, reader: reader};
 	}
 	
+	/// Contruct a new HttpReply by parsing the input from `reader`
+	/// # Examples
+	/// ```no_run
+	/// # extern crate rust_http;
+	/// use std::net::TcpStream;
+	/// use std::io::BufReader;
+	/// use http::messages::HttpReply;
+	/// let mut socket = try!(TcpStream::connect("host_address:port"));
+	/// // Do some stuff with socket and assume an http reply is coming
+	/// let reader = BufReader::new(&socket);
+	/// let r = try!(HttpReply::parse(reader));
+	/// ```
 	pub fn parse(mut reader: BufReader<&TcpStream>) -> Result<HttpReply, Error> {
 		let mut code: u32;
 		let mut version: String;
@@ -54,6 +70,7 @@ impl <'r> HttpReply<'r> {
 		return Ok(reply);
 	}
 	
+	/// Get the `Content-Length` property from header
 	pub fn get_length(&self) -> Result<usize, Error> {
 		return match self.header.get("Content-Length") {
 			Some(s) => match usize::from_str(s) {
@@ -64,6 +81,7 @@ impl <'r> HttpReply<'r> {
 		};
 	}
 	
+	/// Return a `BufReader` to read the reply's content
 	pub fn get_reader(&mut self) -> &mut BufReader<&'r TcpStream> {
 		return &mut self.reader;
 	}

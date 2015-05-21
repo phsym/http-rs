@@ -3,10 +3,12 @@ use std::io::{BufReader, BufWriter, Error};
 
 #[macro_use] pub mod macros;
 pub mod methods;
+/// Module containing HTTP client implementations
 pub mod client;
 pub mod messages;
 
-
+/// HttpStream contains the Input/Output stuff for HTTP.
+/// For now it just contains a `std::net::TcpStream` instance.
 pub struct HttpStream {
 	sock: TcpStream,
 }

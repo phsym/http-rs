@@ -7,6 +7,7 @@ use super::*;
 use super::methods::Method;
 use super::messages::HttpReply;
 
+/// A simple and low-level HTTP client implementation
 pub struct HttpClient {
 	addr: SocketAddr,
 	header: HashMap<String, String>,
@@ -14,6 +15,14 @@ pub struct HttpClient {
 }
 
 impl HttpClient {
+	
+	/// Create a new HTTP client that will send requests to `addr`.
+	/// # Example
+	/// ```
+	/// use http::client::HttpClient;
+	/// let mut client = HttpClient::new("www.google.com:80");
+	/// // Send some requests
+	/// ```
 	pub fn new<A: ToSocketAddrs>(addr: A) -> Result<HttpClient, Error> {
 		let address = option!(try!(addr.to_socket_addrs()).next(), "Cannot resolve address");
 		let client = HttpClient{

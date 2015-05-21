@@ -1,3 +1,4 @@
+/// Unwrap an `Option<T>` or return an `Err`
 #[macro_export]
 macro_rules! option {
 	($expr:expr, $msg:expr) => (match $expr {
@@ -6,6 +7,19 @@ macro_rules! option {
 	})
 }
 
+/// Quickly build a `std::collections::HashMap`
+///
+/// This macro is quite similar to the `vec!` macro but is used to build
+/// a `HashMap`. The types will be deduced from the arguments.
+/// # Example
+/// ```
+/// let my_map = map!{"a" => 1, "b" => 2};
+/// // Is similar to :
+/// use std::collections::HashMap;
+/// let mut my_map: HashMap<&str, i32> = HashMap::new();
+/// my_map.insert("a", 1);
+/// my_map.insert("b", 2);
+/// ```
 #[macro_export]
 macro_rules! map {
 	(
@@ -21,6 +35,16 @@ macro_rules! map {
 	)
 }
 
+/// Print debug message only if built in debug mode
+///
+/// This macro will print given message if `debug_assertions` build configuration is set.
+/// The message will be formated with its additional arguments with `format!` macro and will
+/// contain a header with file name and line number
+/// # Example
+/// ```
+/// debug!("This is a debug message");
+/// debug!("This is a debug {}", "message");
+/// ```
 #[macro_export]
 macro_rules! debug {
 	($fmt:expr) => (

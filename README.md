@@ -22,7 +22,7 @@ And to build html documentation, run
 > cargo doc
 
 # How to use
-More often, you will include the library as a dependency to your project. In order to do this, add the following line to you **Cargo.toml** file :
+More often, you will include the library as a dependency to your project. In order to do this, add the following lines to your **Cargo.toml** file :
 
 ```toml
 [dependencies.http-rs]
@@ -45,3 +45,5 @@ fn main() {
 	}
 }
 ```
+
+Additional examples are provided in documentation.

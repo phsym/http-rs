@@ -8,9 +8,9 @@ use std::str::FromStr;
 /// It contains an already parsed header information, and offers
 /// a `BufReader` to read reply content
 pub struct HttpReply<'r> {
-	pub version: String,
-	pub code: u32,
-	pub status: String,
+	version: String,
+	code: u32,
+	status: String,
 	pub header: HashMap<String, String>,
 	reader: BufReader<&'r TcpStream>
 }
@@ -84,5 +84,17 @@ impl <'r> HttpReply<'r> {
 	/// Return a `BufReader` to read the reply's content
 	pub fn get_reader(&mut self) -> &mut BufReader<&'r TcpStream> {
 		return &mut self.reader;
+	}
+	
+	pub fn get_version(&self) -> &String {
+		return &self.version;
+	}
+	
+	pub fn get_code(&self) -> u32 {
+		return self.code;
+	}
+	
+	pub fn get_status(&self) -> &String {
+		return &self.status;
 	}
 }

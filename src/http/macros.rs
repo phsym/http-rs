@@ -58,3 +58,20 @@ macro_rules! debug {
 		}
 	);
 }
+
+/// Return a String if conversion is possible by calling to_string() on the provided expression
+#[macro_export]
+macro_rules! str {
+	($expr:expr) => ($expr.to_string());
+}
+
+/// Build a `std::collections::HashMap` the same way the `map!` macro does, except
+/// that all keys and values are converted to `String` with `str!` macro
+#[macro_export]
+macro_rules! smap {
+	(
+		$($key:expr => $val:expr), *
+	) => (
+		map!($(str!($key) => str!($val)), *)
+	)
+}

@@ -39,7 +39,7 @@ impl HttpClient {
 		return Ok(self.stream.as_mut().unwrap());
 	}
 	
-	pub fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<&str, &str>>) -> Result<BufWriter<&TcpStream>, Error> {
+	pub fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<&TcpStream>, Error> {
 		let mut stream = try!(self.connect());
 		let mut w = stream.get_writer();
 		{
@@ -49,7 +49,8 @@ impl HttpClient {
 			try!(writer.write(path.as_bytes()));
 			try!(writer.write(b"\r\n"));
 			
-			//TODO: Write header and length
+			//Write header
+			//TODO : Merge with client header
 			if let Some(hdr) = header {
 				for (k, v) in hdr {
 					try!(writer.write(k.as_bytes()));
@@ -71,8 +72,14 @@ impl HttpClient {
 		return HttpReply::parse(stream.get_reader());
 	}
 	
-	pub fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<&str, &str>>, data: Option<&[u8]>) -> Result<HttpReply, Error> {
+	pub fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply, Error> {
 		{
+			let mut hdr;
+			if let Some(h) = header { hdr = h.clone(); }
+			else { hdr = HashMap::new(); }
+			if let Some(d) = data {
+				hdr.insert("Content-Length".to_string(), d.len().to_string());
+			}
 			let mut writer = try!(self.send_stream(method, path, header));
 			if let Some(d) = data {
 				try!(writer.write(d));
@@ -80,5 +87,9 @@ impl HttpClient {
 			try!(writer.flush());
 		}
 		return self.get_reply();
+	}
+	
+	pub fn send_string(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, string: &str) -> Result<HttpReply, Error> {
+		return self.send(method, path, header, Some(string.as_bytes()));
 	}
 }

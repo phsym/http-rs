@@ -3,6 +3,7 @@
 name = "http-rs"
 version = "0.0.1"
 authors = [ "Pierre-Henri Symoneaux" ]
+license = "BSD-3-Clause"
 
 [[bin]]
 name = "http-rs"

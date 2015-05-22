@@ -1,6 +1,13 @@
+![License](http://img.shields.io/badge/license-BSD-lightgrey.svg)
 [![Build Status](https://travis-ci.org/phsym/http-rs.svg)](https://travis-ci.org/phsym/http-rs)
 
 # http-rs
+
+*Copyright &copy; 2015 Pierre-Henri Symoneaux*
+
+> THIS SOFTWARE IS DISTRIBUTED WITHOUT ANY WARRANTY <br>
+> Check LICENSE.txt file for more information. <br>
+
 A simple and low level http client toolkit written in Rust.
 This is just a pet project I use to discover and learn Rust. If you need a more complete and well supported HTTP library,
 I advise you to have a look at [Teepee](http://teepee.rs/) or at [Hyper](https://github.com/hyperium/hyper)

@@ -33,6 +33,7 @@ impl HttpClient {
 		return Ok(client);
 	}
 	
+	/// Open a `TcpStream` to remote host
 	fn connect(&mut self) -> Result<&mut HttpStream, Error> {
 		self.stream = Some(try!(HttpStream::open(self.addr)));
 		return Ok(self.stream.as_mut().unwrap());

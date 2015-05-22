@@ -2,6 +2,8 @@ use std::net::TcpStream;
 use std::collections::HashMap;
 use std::io::{BufReader, Error, ErrorKind, BufRead};
 use std::str::FromStr;
+use std::collections::hash_map::{Iter, Keys};
+//use std::iter::IntoIterator;
 
 /// A structure that represents an HTTP reply
 ///
@@ -11,15 +13,11 @@ pub struct HttpReply<'r> {
 	version: String,
 	code: u32,
 	status: String,
-	pub header: HashMap<String, String>,
+	header: HashMap<String, String>,
 	reader: BufReader<&'r TcpStream>
 }
 
 impl <'r> HttpReply<'r> {
-	fn new(version: String, code: u32, status: String, header: HashMap<String, String>, reader: BufReader<&TcpStream>) -> HttpReply {
-		return HttpReply{version: version, code: code, status: status, header: header, reader: reader};
-	}
-	
 	/// Contruct a new HttpReply by parsing the input from `reader`
 	/// # Examples
 	/// ```ignore
@@ -66,7 +64,7 @@ impl <'r> HttpReply<'r> {
 			}
 		}
 		
-		let reply = HttpReply::new(version, code, status, header, reader);
+		let reply = HttpReply{version: version, code: code, status: status, header: header, reader: reader};
 		return Ok(reply);
 	}
 	
@@ -86,15 +84,41 @@ impl <'r> HttpReply<'r> {
 		return &mut self.reader;
 	}
 	
+	/// Get the HTTP version from reply. Returns a string like `"HTTP/1.0"`
 	pub fn get_version(&self) -> &String {
 		return &self.version;
 	}
 	
+	/// Get the status code from reply
 	pub fn get_code(&self) -> u32 {
 		return self.code;
 	}
 	
+	/// Get the status text from reply
 	pub fn get_status(&self) -> &String {
 		return &self.status;
 	}
+	
+	/// Get a property from reply header
+	pub fn get_property(&self, key: &String) -> Option<&String> {
+		return self.header.get(key);
+	}
+	
+	/// Return an iterator over properties names set in reply header
+	pub fn get_properties_name(&self) -> Keys<String, String> {
+		return self.header.keys();
+	}
+	
+	/// Return an iterator over properties from reply header
+	pub fn iter(&self) -> Iter<String, String> {
+		return self.header.iter();
+	} 
 }
+
+//impl <'r> IntoIterator for HttpReply<'r> {
+//	type Item = (&'r String, &'r String);
+//	type IntoIter = Iter<'r, String, String>;
+//	fn into_iter(self) -> Iter<'r, String, String> {
+//        return self.iter();
+//    }
+//}

@@ -24,7 +24,7 @@ fn main() {
 			println!("status = {}", res.get_status());
 			println!("Content length = {}", res.get_length().unwrap());
 			println!("\nHeader : ");
-			for (k, v) in &res.header {
+			for (k, v) in res.iter() {
 				println!("{} => {}", k, v);
 			}
 			

@@ -34,7 +34,7 @@ fn main() {
 	let mut http = HttpClient::new("www.google.fr:80").unwrap();
 	match http.send(Method::GET, /, None, None) {
 		Ok(reply) => {},// Do something with the reply
-		Err(e) => panic!("Cannot send request : {}", e);
+		Err(e) => panic!("Cannot send request : {}", e)
 	}
 }
 ```

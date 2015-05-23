@@ -1,3 +1,4 @@
+//! HTTP messages definitions
 use std::net::TcpStream;
 use std::collections::HashMap;
 use std::io::{BufReader, Error, ErrorKind};

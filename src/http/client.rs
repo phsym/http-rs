@@ -1,3 +1,4 @@
+//! Module containing HTTP client implementations
 use std::net::{SocketAddr, ToSocketAddrs, TcpStream};
 use std::io::prelude::*;
 use std::collections::HashMap;

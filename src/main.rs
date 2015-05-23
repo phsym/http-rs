@@ -35,5 +35,5 @@ fn main() {
 	
 	let mut repl = http.send(Method::GET, "/", Some(&hdr), Some(b"tatayoyo")).unwrap();
 	let my_str = repl.read_string().unwrap();
-	println!("new data : {}", my_str);
+	println!("New data : {}", my_str);
 }

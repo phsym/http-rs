@@ -1,3 +1,5 @@
+//! Defines some usefull constants
+
 /// Properties names constant for HTTP headers
 pub mod properties {
 	pub const CONTENT_LENGTH: &'static str = "Content-Length";

@@ -20,22 +20,14 @@ fn main() {
 	
 	match http.send(Method::GET, "/", Some(&hdr), Some(b"tatayoyo")) {
 		Ok(ref mut res) => {
-			println!("version = {}", res.get_version());
-			println!("code = {}", res.get_code());
-			println!("status = {}", res.get_status());
-			println!("Content length = {}", res.get_length().unwrap());
-			println!("\nHeader : ");
-			for (k, v) in res.iter() {
-				println!("{} => {}", k, v);
-			}
-			
+			debug!("Reply : \n{:?}", res);
 			let mut data = [0u8; 1024];
 			if let Err(e) = res.get_reader().read(&mut data){
 				panic!("Cannot read data {}", e);
 			}
 			let mystr = str::from_utf8(&data).unwrap();
 			
-			println!("\nContent : \n{}", mystr);
+			println!("Content : \n{}", mystr);
 		},
 		Err(ref e) => panic!("Cannot send request : {}", e)
 	}

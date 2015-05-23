@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::io::{BufReader, Error, ErrorKind, BufRead};
 use std::str::FromStr;
 use std::collections::hash_map::{Iter, Keys};
+use std::fmt;
 
 use super::constants::properties;
 
@@ -113,5 +114,28 @@ impl <'r> HttpReply<'r> {
 	/// Return an iterator over properties from reply header
 	pub fn iter(&self) -> Iter<String, String> {
 		return self.header.iter();
-	} 
+	}
+}
+
+impl <'r> fmt::Debug for HttpReply<'r> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		try!((self as &fmt::Display).fmt(f));
+		try!(writeln!(f, "\n\tProperties : "));
+		for (k, v) in self.iter() {
+			try!(writeln!(f, "\t\t{} => {}", k, v));
+		}
+		return Ok(());
+	}
+}
+
+impl <'r> fmt::Display for HttpReply<'r> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		try!(writeln!(f, "\tversion = {}", self.get_version()));
+		try!(writeln!(f, "\tcode = {}", self.get_code()));
+		try!(writeln!(f, "\tstatus = {}", self.get_status()));
+		if let Ok(len) = self.get_length() {
+			try!(writeln!(f, "\tLength = {}", len));
+		}
+		return Ok(());
+	}
 }

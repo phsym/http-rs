@@ -80,7 +80,7 @@ impl HttpClient {
 	}
 	
 	pub fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<&TcpStream>, Error> {
-		let mut hdr = self.update_properties(header);
+		let hdr = self.update_properties(header);
 		let mut stream = try!(self.connect());
 		let mut w = stream.get_writer();
 		{

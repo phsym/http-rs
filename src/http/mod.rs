@@ -3,6 +3,8 @@ use std::io::{BufReader, BufWriter, Error};
 
 #[macro_use] mod macros;
 pub mod methods;
+/// Defines some usefull constants
+pub mod constants;
 /// Module containing HTTP client implementations
 pub mod client;
 pub mod messages;

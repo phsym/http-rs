@@ -9,7 +9,8 @@ use http::client::HttpClient;
 
 fn main() {
 	let mut http = HttpClient::new("www.google.com:80").unwrap();
-//	let mut http = HttpClient::new("127.0.0.1:80");
+//	let mut http = HttpClient::new("127.0.0.1:80").unwrap();
+	http.set_property(str!("perm"), str!("test"));
 	let hdr = smap!(
 		"test" => "toto",
 		"foo" => "bar",
@@ -39,5 +40,5 @@ fn main() {
 		Err(ref e) => panic!("Cannot send request : {}", e)
 	}
 	
-	http.send(Method::GET, "/", Some(&hdr), Some(b"tatayoyo"));
+	http.send(Method::GET, "/", Some(&hdr), Some(b"tatayoyo")).unwrap();
 }

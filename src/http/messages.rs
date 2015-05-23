@@ -3,7 +3,8 @@ use std::collections::HashMap;
 use std::io::{BufReader, Error, ErrorKind, BufRead};
 use std::str::FromStr;
 use std::collections::hash_map::{Iter, Keys};
-//use std::iter::IntoIterator;
+
+use super::constants::properties;
 
 /// A structure that represents an HTTP reply
 ///
@@ -70,7 +71,7 @@ impl <'r> HttpReply<'r> {
 	
 	/// Get the `Content-Length` property from header
 	pub fn get_length(&self) -> Result<usize, Error> {
-		return match self.header.get("Content-Length") {
+		return match self.header.get(properties::CONTENT_LENGTH) {
 			Some(s) => match usize::from_str(s) {
 				Ok(i) => Ok(i),
 				Err(e) => Err(Error::new(ErrorKind::Other, format!("Cannot parse number Content-Lentgh from header : {}", e)))
@@ -114,11 +115,3 @@ impl <'r> HttpReply<'r> {
 		return self.header.iter();
 	} 
 }
-
-//impl <'r> IntoIterator for HttpReply<'r> {
-//	type Item = (&'r String, &'r String);
-//	type IntoIter = Iter<'r, String, String>;
-//	fn into_iter(self) -> Iter<'r, String, String> {
-//        return self.iter();
-//    }
-//}

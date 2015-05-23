@@ -7,6 +7,7 @@ use std::str;
 use http::methods::Method;
 use http::client::HttpClient;
 
+#[allow(dead_code)]
 fn main() {
 	let mut http = HttpClient::new("www.google.com:80").unwrap();
 //	let mut http = HttpClient::new("127.0.0.1:80").unwrap();

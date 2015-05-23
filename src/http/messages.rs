@@ -1,9 +1,11 @@
 use std::net::TcpStream;
 use std::collections::HashMap;
-use std::io::{BufReader, Error, ErrorKind, BufRead};
+use std::io::{BufReader, Error, ErrorKind};
+use std::str;
 use std::str::FromStr;
 use std::collections::hash_map::{Iter, Keys};
 use std::fmt;
+use std::io::prelude::*;
 
 use super::constants::properties;
 
@@ -114,6 +116,25 @@ impl <'r> HttpReply<'r> {
 	/// Return an iterator over properties from reply header
 	pub fn iter(&self) -> Iter<String, String> {
 		return self.header.iter();
+	}
+	
+	/// Read all the reply content into a buffer and return this buffer
+	pub fn read_all(&mut self) -> Result<Vec<u8>, Error> {
+		let len = try!(self.get_length());
+		let mut data: Vec<u8> = vec![0u8; len];
+		let mut reader = self.get_reader();
+		try!(reader.read(&mut data));
+		return Ok(data);
+	}
+	
+	/// Read all the repl and return it into a `String`
+	pub fn read_string(&mut self) -> Result<String, Error> {
+		let data = try!(self.read_all());
+		let string = match str::from_utf8(&data) {
+			Ok(s) => s.to_string(),
+			Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot convert content to utf8 string : {}", e)))
+		};
+		return Ok(string);
 	}
 }
 

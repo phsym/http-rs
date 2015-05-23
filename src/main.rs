@@ -33,5 +33,7 @@ fn main() {
 		Err(ref e) => panic!("Cannot send request : {}", e)
 	}
 	
-	http.send(Method::GET, "/", Some(&hdr), Some(b"tatayoyo")).unwrap();
+	let mut repl = http.send(Method::GET, "/", Some(&hdr), Some(b"tatayoyo")).unwrap();
+	let my_str = repl.read_string().unwrap();
+	println!("new data : {}", my_str);
 }

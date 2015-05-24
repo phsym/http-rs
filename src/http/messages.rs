@@ -24,15 +24,14 @@ pub struct HttpReply<T: Read> {
 impl <T: Read> HttpReply<T> {
 	/// Contruct a new HttpReply by parsing the input from `reader`
 	/// # Examples
-	/// ```ignore
-	/// # extern crate http;
+	/// ```no_run
 	/// use std::net::TcpStream;
 	/// use std::io::BufReader;
 	/// use http::messages::HttpReply;
-	/// let mut socket = try!(TcpStream::connect("host_address:port"));
+	/// let mut socket = TcpStream::connect("host_address:port").unwrap();
 	/// // Do some stuff with socket and assume an http reply is coming
-	/// let reader = BufReader::new(&socket);
-	/// let r = try!(HttpReply::parse(reader));
+	/// let reader = BufReader::new(socket);
+	/// let r = HttpReply::parse(reader).unwrap();
 	/// ```
 	pub fn parse(mut reader: BufReader<T>) -> Result<HttpReply<T>, Error> {
 		let mut code: u32;

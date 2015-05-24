@@ -13,12 +13,16 @@ macro_rules! option {
 /// a `HashMap`. The types will be deduced from the arguments.
 /// # Example
 /// ```ignore
+/// # #[macro_use] extern crate http;
+/// # use std::collections::HashMap;
+/// # fn main() {
 /// let my_map = map!{"a" => 1, "b" => 2};
+/// # drop(my_map);
 /// // Is similar to :
-/// use std::collections::HashMap;
 /// let mut my_map: HashMap<&str, i32> = HashMap::new();
 /// my_map.insert("a", 1);
 /// my_map.insert("b", 2);
+/// # }
 /// ```
 #[macro_export]
 macro_rules! map {
@@ -42,8 +46,11 @@ macro_rules! map {
 /// contain a header with file name and line number
 /// # Example
 /// ```ignore
+/// # #[macro_use] extern crate http;
+/// # fn main() {
 /// debug!("This is a debug message");
 /// debug!("This is a debug {}", "message");
+/// # }
 /// ```
 #[macro_export]
 macro_rules! debug {

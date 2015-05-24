@@ -3,7 +3,9 @@
 use std::net::{ToSocketAddrs, TcpStream};
 use std::io::{BufReader, BufWriter, Error, Read, Write};
 
+/// Represent a type that can be opened (ie connected) to a remote `SocketAddress`
 pub trait Open {
+	/// Create a new Instance of `Self` connected to `addr`
 	fn open<A: ToSocketAddrs>(addr: A) -> Result<Self, Error>;
 }
 
@@ -33,7 +35,7 @@ impl Stream for HttpStream {
 
 use openssl::ssl::{SslContext, SslStream, SslMethod};
 
-/// HttpsStream for HTTPS Input/Output
+/// HttpsStream for secured HTTPS Input/Output
 pub type HttpsStream = SslStream<TcpStream>;
 
 impl Open for HttpsStream {

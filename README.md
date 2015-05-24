@@ -44,8 +44,10 @@ fn main() {
 		Ok(reply) => {},// Do something with the reply
 		Err(e) => panic!("Cannot send request : {}", e)
 	}
+	// The same is possible on HTTPS :
 	let mut https = HttpsClient::new("www.google.com:443").unwrap();
+	// (...)
 }
 ```
 
-Additional examples are provided in documentation.
+Additional examples are provided in documentation and in [examples](./examples/) directory

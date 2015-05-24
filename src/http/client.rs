@@ -32,7 +32,7 @@ impl <T: Read+Write, S: Open+Stream<T>> BaseClient<T, S> {
 	/// # Example
 	/// ```no_run
 	/// use http::client::BaseClient;
-	/// let mut client = BaseClient::new("www.google.com:80");
+	/// let mut client = HttpClient::new("www.google.com:80");
 	/// // Send some requests
 	/// ```
 	pub fn new<A: ToSocketAddrs>(addr: A) -> Result<BaseClient<T, S>, Error> {

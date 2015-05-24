@@ -1,12 +1,10 @@
 //! Module containing HTTP client implementations
-use std::net::{SocketAddr, ToSocketAddrs, TcpStream};
+use std::net::{SocketAddr, ToSocketAddrs};
 use std::io::prelude::*;
 use std::collections::HashMap;
 use std::collections::hash_map::{Iter, Keys};
 use std::io::{Error, BufWriter, ErrorKind};
 use std::marker::PhantomData;
-
-use openssl::ssl::SslStream;
 
 use super::methods::Method;
 use super::messages::HttpReply;
@@ -21,10 +19,10 @@ struct BaseClient<T: Read+Write, S: Open+Stream<T>> {
 	inner_stream_type: PhantomData<T>
 }
 
-/// Client for secured HTTP
-pub type HttpsClient = BaseClient<SslStream<TcpStream>, HttpsStream>;
 /// Client for unsecured HTTP
-pub type HttpClient = BaseClient<TcpStream, HttpStream>;
+pub type HttpClient = BaseClient<HttpStream, HttpStream>;
+/// Client for secured HTTP
+pub type HttpsClient = BaseClient<HttpsStream, HttpsStream>;
 
 impl <T: Read+Write, S: Open+Stream<T>> BaseClient<T, S> {
 	

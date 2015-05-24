@@ -21,12 +21,12 @@ impl Open for HttpStream {
 	}
 }
 
-impl Stream<TcpStream> for HttpStream {
-	fn new_reader(&mut self) -> BufReader<TcpStream> {
+impl Stream<HttpStream> for HttpStream {
+	fn new_reader(&mut self) -> BufReader<HttpStream> {
 		return BufReader::new(self.try_clone().unwrap());
 	}
 	
-	fn new_writer(&mut self) -> BufWriter<TcpStream> {
+	fn new_writer(&mut self) -> BufWriter<HttpStream> {
 		return BufWriter::new(self.try_clone().unwrap());
 	}
 }
@@ -45,12 +45,12 @@ impl Open for HttpsStream {
 	}
 }
 
-impl Stream<SslStream<TcpStream>> for HttpsStream {
-	fn new_reader(&mut self) -> BufReader<SslStream<TcpStream>> {
+impl Stream<HttpsStream> for HttpsStream {
+	fn new_reader(&mut self) -> BufReader<HttpsStream> {
 		return BufReader::new(self.try_clone().unwrap());
 	}
 	
-	fn new_writer(&mut self) -> BufWriter<SslStream<TcpStream>> {
+	fn new_writer(&mut self) -> BufWriter<HttpsStream> {
 		return BufWriter::new(self.try_clone().unwrap());
 	}
 }

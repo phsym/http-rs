@@ -85,6 +85,9 @@ impl <S: Open+Stream> BaseClient<S> {
 		return hdr;
 	}
 	
+	/// Start a new request and return `BufWriter` to the underlying stream
+	/// so you can write the request body.
+	/// When done, don't forget to call `flush()` on the `BufWriter` in ordr to flush all the buffer
 	pub fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<S>, Error> {
 		let hdr = self.update_properties(header);
 		let mut stream = try!(self.connect());

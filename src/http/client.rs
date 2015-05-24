@@ -31,7 +31,7 @@ impl <T: Read+Write, S: Open+Stream<T>> BaseClient<T, S> {
 	/// Create a new HTTP client that will send requests to `addr`.
 	/// # Example
 	/// ```no_run
-	/// use http::client::BaseClient;
+	/// use http::client::HttpClient;
 	/// let mut client = HttpClient::new("www.google.com:80");
 	/// // Send some requests
 	/// ```

@@ -7,9 +7,9 @@ pub trait Open {
 	fn open<A: ToSocketAddrs>(addr: A) -> Result<Self, Error>;
 }
 
-pub trait Stream<S: Read+Write> {
-	fn new_reader(&mut self) -> BufReader<S>;
-	fn new_writer(&mut self) -> BufWriter<S>;
+pub trait Stream: Read+Write {
+	fn new_reader(&mut self) -> BufReader<Self>;
+	fn new_writer(&mut self) -> BufWriter<Self>;
 }
 
 /// HttpStream for unsecured HTTP Input/Output
@@ -21,7 +21,7 @@ impl Open for HttpStream {
 	}
 }
 
-impl Stream<HttpStream> for HttpStream {
+impl Stream for HttpStream {
 	fn new_reader(&mut self) -> BufReader<HttpStream> {
 		return BufReader::new(self.try_clone().unwrap());
 	}
@@ -45,7 +45,7 @@ impl Open for HttpsStream {
 	}
 }
 
-impl Stream<HttpsStream> for HttpsStream {
+impl Stream for HttpsStream {
 	fn new_reader(&mut self) -> BufReader<HttpsStream> {
 		return BufReader::new(self.try_clone().unwrap());
 	}

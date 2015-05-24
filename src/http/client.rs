@@ -4,7 +4,6 @@ use std::io::prelude::*;
 use std::collections::HashMap;
 use std::collections::hash_map::{Iter, Keys};
 use std::io::{Error, BufWriter, ErrorKind};
-use std::marker::PhantomData;
 
 use super::methods::Method;
 use super::messages::HttpReply;
@@ -12,19 +11,18 @@ use super::constants::properties;
 use super::streams::*;
 
 /// A simple and low-level HTTP client implementation
-struct BaseClient<T: Read+Write, S: Open+Stream<T>> {
+struct BaseClient<S: Open+Stream> {
 	addr: SocketAddr,
 	header: HashMap<String, String>,
 	stream: Option<S>,
-	inner_stream_type: PhantomData<T>
 }
 
 /// Client for unsecured HTTP
-pub type HttpClient = BaseClient<HttpStream, HttpStream>;
+pub type HttpClient = BaseClient<HttpStream>;
 /// Client for secured HTTP
-pub type HttpsClient = BaseClient<HttpsStream, HttpsStream>;
+pub type HttpsClient = BaseClient<HttpsStream>;
 
-impl <T: Read+Write, S: Open+Stream<T>> BaseClient<T, S> {
+impl <S: Open+Stream> BaseClient<S> {
 	
 	/// Create a new HTTP client that will send requests to `addr`.
 	/// # Example
@@ -33,13 +31,12 @@ impl <T: Read+Write, S: Open+Stream<T>> BaseClient<T, S> {
 	/// let mut client = HttpClient::new("www.google.com:80");
 	/// // Send some requests
 	/// ```
-	pub fn new<A: ToSocketAddrs>(addr: A) -> Result<BaseClient<T, S>, Error> {
+	pub fn new<A: ToSocketAddrs>(addr: A) -> Result<BaseClient<S>, Error> {
 		let address = option!(try!(addr.to_socket_addrs()).next(), "Cannot resolve address");
 		let client = BaseClient{
 			addr: address,
 			header: HashMap::new(),
 			stream: None,
-			inner_stream_type: PhantomData
 		};
 		return Ok(client);
 	}
@@ -88,7 +85,7 @@ impl <T: Read+Write, S: Open+Stream<T>> BaseClient<T, S> {
 		return hdr;
 	}
 	
-	pub fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<T>, Error> {
+	pub fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<S>, Error> {
 		let hdr = self.update_properties(header);
 		let mut stream = try!(self.connect());
 		let mut w = stream.new_writer();
@@ -111,7 +108,7 @@ impl <T: Read+Write, S: Open+Stream<T>> BaseClient<T, S> {
 		return Ok(w);
 	}
 	
-	pub fn get_reply(&mut self) -> Result<HttpReply<T>, Error> {
+	pub fn get_reply(&mut self) -> Result<HttpReply<S>, Error> {
 		let stream = match self.stream.as_mut() {
 			Some(s) => s,
 			None => return Err(Error::new(ErrorKind::NotConnected, "Cannot get reply since no stream is opened"))
@@ -119,7 +116,7 @@ impl <T: Read+Write, S: Open+Stream<T>> BaseClient<T, S> {
 		return HttpReply::parse(stream.new_reader());
 	}
 	
-	pub fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<T>, Error> {
+	pub fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<S>, Error> {
 		{
 			let mut hdr = match header {
 				Some(h) => h.clone(),

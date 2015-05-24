@@ -5,11 +5,11 @@ use std::str;
 
 //#[macro_use]pub mod http;
 use http::methods::Method;
-use http::client::HttpClient;
+use http::client::HttpsClient;
 
 #[allow(dead_code)]
 fn main() {
-	let mut http = HttpClient::new("www.google.com:80").unwrap();
+	let mut http = HttpsClient::new("www.google.com:443").unwrap();
 //	let mut http = HttpClient::new("127.0.0.1:80").unwrap();
 	http.set_property(str!("perm"), str!("test"));
 	let hdr = smap!(

@@ -1,5 +1,4 @@
 //! HTTP messages definitions
-use std::net::TcpStream;
 use std::collections::HashMap;
 use std::io::{BufReader, Error, ErrorKind};
 use std::str;
@@ -13,16 +12,16 @@ use super::constants::properties;
 /// A structure that represents an HTTP reply
 ///
 /// It contains an already parsed header information, and offers
-/// a `BufReader` to read reply content
-pub struct HttpReply<'r> {
+/// a `BufReader<T>` to read reply content
+pub struct HttpReply<T: Read> {
 	version: String,
 	code: u32,
 	status: String,
 	header: HashMap<String, String>,
-	reader: BufReader<&'r TcpStream>
+	reader: BufReader<T>
 }
 
-impl <'r> HttpReply<'r> {
+impl <T: Read> HttpReply<T> {
 	/// Contruct a new HttpReply by parsing the input from `reader`
 	/// # Examples
 	/// ```ignore
@@ -35,7 +34,7 @@ impl <'r> HttpReply<'r> {
 	/// let reader = BufReader::new(&socket);
 	/// let r = try!(HttpReply::parse(reader));
 	/// ```
-	pub fn parse(mut reader: BufReader<&TcpStream>) -> Result<HttpReply, Error> {
+	pub fn parse(mut reader: BufReader<T>) -> Result<HttpReply<T>, Error> {
 		let mut code: u32;
 		let mut version: String;
 		let mut status: String;
@@ -85,7 +84,7 @@ impl <'r> HttpReply<'r> {
 	}
 	
 	/// Return a `BufReader` to read the reply's content
-	pub fn get_reader(&mut self) -> &mut BufReader<&'r TcpStream> {
+	pub fn get_reader(&mut self) -> &mut BufReader<T> {
 		return &mut self.reader;
 	}
 	
@@ -139,7 +138,7 @@ impl <'r> HttpReply<'r> {
 	}
 }
 
-impl <'r> fmt::Debug for HttpReply<'r> {
+impl <'r, T: Read> fmt::Debug for HttpReply<T> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		try!((self as &fmt::Display).fmt(f));
 		try!(writeln!(f, "\n\tProperties : "));
@@ -150,7 +149,7 @@ impl <'r> fmt::Debug for HttpReply<'r> {
 	}
 }
 
-impl <'r> fmt::Display for HttpReply<'r> {
+impl <'r, T: Read> fmt::Display for HttpReply<T> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		try!(writeln!(f, "\tversion = {}", self.get_version()));
 		try!(writeln!(f, "\tcode = {}", self.get_code()));

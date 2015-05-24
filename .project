@@ -14,4 +14,14 @@
 	<natures>
 		<nature>com.github.rustdt.ide.core.nature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>OPENSSL_INCLUDE_DIR</name>
+			<value>file:/C:/OpenSSL-Win64/include</value>
+		</variable>
+		<variable>
+			<name>OPENSSL_LIB_DIR</name>
+			<value>file:/C:/OpenSSL-Win64</value>
+		</variable>
+	</variableList>
 </projectDescription>

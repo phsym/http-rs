@@ -2,6 +2,7 @@
 
 use std::net::{ToSocketAddrs, TcpStream};
 use std::io::{BufReader, BufWriter, Error, Read, Write};
+use std::ops::Deref;
 
 /// Represent a type that can be opened (ie connected) to a remote `SocketAddress`
 pub trait Open {
@@ -9,11 +10,17 @@ pub trait Open {
 	fn open<A: ToSocketAddrs>(addr: A) -> Result<Self, Error>;
 }
 
-pub trait Stream: Read+Write {
+pub trait Stream: Read+Write+Sized {
 	/// Build a new `BufReader` to self
-	fn new_reader(&mut self) -> BufReader<Self>;
+	fn new_reader(&mut self) -> BufReader<Self> {
+		return BufReader::new(self.copy());
+	}
 	/// Build a new `BufWriter` to self
-	fn new_writer(&mut self) -> BufWriter<Self>;
+	fn new_writer(&mut self) -> BufWriter<Self> {
+		return BufWriter::new(self.copy());
+	}
+	/// Create a copy of the stream
+	fn copy(&self) -> Self;
 }
 
 /// HttpStream for unsecured HTTP Input/Output
@@ -26,12 +33,8 @@ impl Open for HttpStream {
 }
 
 impl Stream for HttpStream {
-	fn new_reader(&mut self) -> BufReader<HttpStream> {
-		return BufReader::new(self.try_clone().unwrap());
-	}
-	
-	fn new_writer(&mut self) -> BufWriter<HttpStream> {
-		return BufWriter::new(self.try_clone().unwrap());
+	fn copy(&self) -> HttpStream {
+		return self.try_clone().unwrap();
 	}
 }
 
@@ -50,11 +53,20 @@ impl Open for HttpsStream {
 }
 
 impl Stream for HttpsStream {
-	fn new_reader(&mut self) -> BufReader<HttpsStream> {
-		return BufReader::new(self.try_clone().unwrap());
+	fn copy(&self) -> HttpsStream {
+		return self.try_clone().unwrap();
 	}
-	
-	fn new_writer(&mut self) -> BufWriter<HttpsStream> {
-		return BufWriter::new(self.try_clone().unwrap());
+}
+
+
+impl <S: Open> Open for Box<S> {
+	fn open<A: ToSocketAddrs>(addr: A) -> Result<Box<S>, Error> {
+		return Ok(Box::new(try!(S::open(addr))));
+	}
+}
+
+impl <S: Stream> Stream for Box<S> {
+	fn copy(&self) -> Box<S> {
+		return Box::new(self.deref().copy());
 	}
 }

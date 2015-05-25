@@ -41,6 +41,10 @@ impl <S: Open+Stream> BaseClient<S> {
 		return Ok(client);
 	}
 	
+	pub fn new_boxed<A: ToSocketAddrs>(addr: A) -> Result<BaseClient<Box<S>>, Error> {
+		return BaseClient::new(addr);
+	}
+	
 	/// Get a property from client permanent header
 	pub fn get_property(&self, key: &String) -> Option<&String> {
 		return self.header.get(key);

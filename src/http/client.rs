@@ -3,7 +3,7 @@ use std::net::{SocketAddr, ToSocketAddrs};
 use std::io::prelude::*;
 use std::collections::HashMap;
 use std::collections::hash_map::{Iter, Keys};
-use std::io::{Error, BufWriter, ErrorKind};
+use std::io::{Error, BufWriter, BufReader, ErrorKind};
 
 use super::methods::Method;
 use super::messages::HttpReply;
@@ -11,7 +11,7 @@ use super::constants::properties;
 use super::streams::*;
 
 /// A simple and low-level HTTP client implementation
-struct BaseClient<S: Open+Stream> {
+struct BaseClient<S: Stream> {
 	addr: SocketAddr,
 	header: HashMap<String, String>,
 	stream: Option<S>,
@@ -22,7 +22,7 @@ pub type HttpClient = BaseClient<HttpStream>;
 /// Client for secured HTTP
 pub type HttpsClient = BaseClient<HttpsStream>;
 
-impl <S: Open+Stream> BaseClient<S> {
+impl <S: Stream> BaseClient<S> {
 	
 	/// Create a new HTTP client that will send requests to `addr`.
 	/// # Example
@@ -39,10 +39,6 @@ impl <S: Open+Stream> BaseClient<S> {
 			stream: None,
 		};
 		return Ok(client);
-	}
-	
-	pub fn new_boxed<A: ToSocketAddrs>(addr: A) -> Result<BaseClient<Box<S>>, Error> {
-		return BaseClient::new(addr);
 	}
 	
 	/// Get a property from client permanent header
@@ -93,10 +89,10 @@ impl <S: Open+Stream> BaseClient<S> {
 	/// so you can write the request body.
 	///
 	/// When done, don't forget to call `flush()` on the `BufWriter` in order to flush all the buffer
-	pub fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<S>, Error> {
+	pub fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<&mut S>, Error> {
 		let hdr = self.update_properties(header);
-		let mut stream = try!(self.connect());
-		let mut w = stream.new_writer();
+		let stream: &mut S = try!(self.connect());
+		let mut w = BufWriter::new(stream);
 		{
 			let mut writer = &mut w;
 			try!(writer.write(method.as_bytes()));
@@ -117,19 +113,19 @@ impl <S: Open+Stream> BaseClient<S> {
 	}
 	
 	/// Get the reply from stream. Must be called only after a request has been sent
-	pub fn get_reply(&mut self) -> Result<HttpReply<S>, Error> {
-		let stream = match self.stream.as_mut() {
+	pub fn get_reply(&mut self) -> Result<HttpReply<&mut S>, Error> {
+		let stream: &mut S = match self.stream.as_mut() {
 			Some(s) => s,
 			None => return Err(Error::new(ErrorKind::NotConnected, "Cannot get reply since no stream is opened"))
 		};
-		return HttpReply::parse(stream.new_reader());
+		return HttpReply::parse(BufReader::new(stream));
 	}
 	
 	/// Send a full request and return the `HttpReply`.
 	///
-	/// If some `data` are provided, they written to the request body, and the corresponding
+	/// If some `data` are provided, they are written to the request body, and the corresponding
 	/// `Content-Lenth` header is inserted nto request's properties
-	pub fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<S>, Error> {
+	pub fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<&mut S>, Error> {
 		{
 			let mut hdr = match header {
 				Some(h) => h.clone(),

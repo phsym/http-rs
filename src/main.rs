@@ -36,9 +36,4 @@ fn main() {
 	let mut repl = http.send(Method::GET, "/", Some(&hdr), Some(b"tatayoyo")).unwrap();
 	let my_str = repl.read_string().unwrap();
 	println!("New data : {}", my_str);
-	
-	let mut http = HttpsClient::new_boxed("www.google.com:443").unwrap();
-	let mut repl = http.send(Method::GET, "/", Some(&hdr), Some(b"tatayoyo")).unwrap();
-	let my_str = repl.read_string().unwrap();
-	println!("New data 2 : {}", my_str);
 }

@@ -10,7 +10,9 @@ pub trait Open {
 }
 
 pub trait Stream: Read+Write {
+	/// Build a new `BufReader` to self
 	fn new_reader(&mut self) -> BufReader<Self>;
+	/// Build a new `BufWriter` to self
 	fn new_writer(&mut self) -> BufWriter<Self>;
 }
 

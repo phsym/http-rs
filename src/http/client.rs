@@ -87,7 +87,8 @@ impl <S: Open+Stream> BaseClient<S> {
 	
 	/// Start a new request and return `BufWriter` to the underlying stream
 	/// so you can write the request body.
-	/// When done, don't forget to call `flush()` on the `BufWriter` in ordr to flush all the buffer
+	///
+	/// When done, don't forget to call `flush()` on the `BufWriter` in order to flush all the buffer
 	pub fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<S>, Error> {
 		let hdr = self.update_properties(header);
 		let mut stream = try!(self.connect());
@@ -111,6 +112,7 @@ impl <S: Open+Stream> BaseClient<S> {
 		return Ok(w);
 	}
 	
+	/// Get the reply from stream. Must be called only after a request has been sent
 	pub fn get_reply(&mut self) -> Result<HttpReply<S>, Error> {
 		let stream = match self.stream.as_mut() {
 			Some(s) => s,
@@ -119,6 +121,10 @@ impl <S: Open+Stream> BaseClient<S> {
 		return HttpReply::parse(stream.new_reader());
 	}
 	
+	/// Send a full request and return the `HttpReply`.
+	///
+	/// If some `data` are provided, they written to the request body, and the corresponding
+	/// `Content-Lenth` header is inserted nto request's properties
 	pub fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<S>, Error> {
 		{
 			let mut hdr = match header {

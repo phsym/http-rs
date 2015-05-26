@@ -10,6 +10,45 @@ use super::messages::HttpReply;
 use super::constants::properties;
 use super::streams::*;
 
+/// Trait for object capable of sending HttpRequests
+pub trait HttpSend {
+	/// Start a new request and return `BufWriter` to the underlying stream
+	/// so you can write the request body.
+	///
+	/// When done, don't forget to call `flush()` on the `BufWriter` in order to flush all the buffer
+	fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<&mut Write>, Error>;
+	
+	/// Send a full request and return the `HttpReply`.
+	///
+	/// If some `data` are provided, they are written to the request body, and the corresponding
+	/// `Content-Lenth` header is inserted nto request's properties
+	fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<&mut Read>, Error>;
+	
+	/// Get the reply from stream. Must be called only after a request has been sent
+	fn get_reply(&mut self) -> Result<HttpReply<&mut Read>, Error>;
+}
+
+
+
+pub trait WithHeader {
+	/// Get a property from client permanent header
+	fn get_property(&self, key: &String) -> Option<&String>;
+	
+	/// Set a property in permanent header
+	fn set_property(&mut self, key: String, value: String);
+	
+	/// Remove a property from permanent header
+	fn unset_property(&mut self, key: &String);
+	
+	/// Return an iterator over properties names from permanent header
+	fn get_properties_name(&self) -> Keys<String, String>;
+	
+	/// Return an iterator over properties from permanent header
+	fn iter(&self) -> Iter<String, String>;
+}
+
+pub trait Http: HttpSend+WithHeader{}
+
 /// A simple and low-level HTTP client implementation
 struct BaseClient<S: Stream> {
 	addr: SocketAddr,
@@ -31,7 +70,7 @@ impl <S: Stream> BaseClient<S> {
 	/// let mut client = HttpClient::new("www.google.com:80");
 	/// // Send some requests
 	/// ```
-	pub fn new<A: ToSocketAddrs>(addr: A) -> Result<BaseClient<S>, Error> {
+	pub fn new<A: ToSocketAddrs>(addr: A) -> Result<Self, Error> {
 		let address = option!(try!(addr.to_socket_addrs()).next(), "Cannot resolve address");
 		let client = BaseClient{
 			addr: address,
@@ -39,37 +78,6 @@ impl <S: Stream> BaseClient<S> {
 			stream: None,
 		};
 		return Ok(client);
-	}
-	
-	/// Get a property from client permanent header
-	pub fn get_property(&self, key: &String) -> Option<&String> {
-		return self.header.get(key);
-	}
-	
-	/// Set a property in permanent header
-	pub fn set_property(&mut self, key: String, value: String) {
-		self.header.insert(key, value);
-	}
-	
-	/// Remove a property from permanent header
-	pub fn unset_property(&mut self, key: &String) {
-		self.header.remove(key);
-	}
-	
-	/// Return an iterator over properties names from permanent header
-	pub fn get_properties_name(&self) -> Keys<String, String> {
-		return self.header.keys();
-	}
-	
-	/// Return an iterator over properties from permanent header
-	pub fn iter(&self) -> Iter<String, String> {
-		return self.header.iter();
-	}
-	
-	/// Open an `HttpStream` to remote host
-	fn connect(&mut self) -> Result<&mut S, Error> {
-		self.stream = Some(try!(S::open(self.addr)));
-		return Ok(self.stream.as_mut().unwrap());
 	}
 	
 	fn update_properties(&self, header: Option<&HashMap<String, String>>) -> HashMap<String, String> {
@@ -85,13 +93,39 @@ impl <S: Stream> BaseClient<S> {
 		return hdr;
 	}
 	
-	/// Start a new request and return `BufWriter` to the underlying stream
-	/// so you can write the request body.
-	///
-	/// When done, don't forget to call `flush()` on the `BufWriter` in order to flush all the buffer
-	pub fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<&mut S>, Error> {
+	/// Open an `HttpStream` to remote host
+	fn connect(&mut self) -> Result<&mut S, Error> {
+		self.stream = Some(try!(S::open(self.addr)));
+		return Ok(self.stream.as_mut().unwrap());
+	}
+}
+
+impl <S: Stream> WithHeader for BaseClient<S> {	
+	fn get_property(&self, key: &String) -> Option<&String> {
+		return self.header.get(key);
+	}
+	
+	fn set_property(&mut self, key: String, value: String) {
+		self.header.insert(key, value);
+	}
+	
+	fn unset_property(&mut self, key: &String) {
+		self.header.remove(key);
+	}
+	
+	fn get_properties_name(&self) -> Keys<String, String> {
+		return self.header.keys();
+	}
+	
+	fn iter(&self) -> Iter<String, String> {
+		return self.header.iter();
+	}
+}
+
+impl <S: Stream> HttpSend for BaseClient<S>	{
+	fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<&mut Write>, Error> {
 		let hdr = self.update_properties(header);
-		let stream: &mut S = try!(self.connect());
+		let stream: &mut Write = try!(self.connect());
 		let mut w = BufWriter::new(stream);
 		{
 			let mut writer = &mut w;
@@ -112,20 +146,15 @@ impl <S: Stream> BaseClient<S> {
 		return Ok(w);
 	}
 	
-	/// Get the reply from stream. Must be called only after a request has been sent
-	pub fn get_reply(&mut self) -> Result<HttpReply<&mut S>, Error> {
-		let stream: &mut S = match self.stream.as_mut() {
+	fn get_reply(&mut self) -> Result<HttpReply<&mut Read>, Error> {
+		let stream: &mut Read = match self.stream.as_mut() {
 			Some(s) => s,
 			None => return Err(Error::new(ErrorKind::NotConnected, "Cannot get reply since no stream is opened"))
 		};
 		return HttpReply::parse(BufReader::new(stream));
 	}
 	
-	/// Send a full request and return the `HttpReply`.
-	///
-	/// If some `data` are provided, they are written to the request body, and the corresponding
-	/// `Content-Lenth` header is inserted nto request's properties
-	pub fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<&mut S>, Error> {
+	fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<&mut Read>, Error> {
 		{
 			let mut hdr = match header {
 				Some(h) => h.clone(),
@@ -143,3 +172,5 @@ impl <S: Stream> BaseClient<S> {
 		return self.get_reply();
 	}
 }
+
+impl <S: Stream> Http for BaseClient<S>{}

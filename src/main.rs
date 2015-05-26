@@ -5,7 +5,7 @@ use std::str;
 
 //#[macro_use]pub mod http;
 use http::methods::Method;
-use http::client::HttpsClient;
+use http::client::*;
 
 #[allow(dead_code)]
 fn main() {

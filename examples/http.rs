@@ -4,7 +4,7 @@ use std::io::prelude::*;
 use std::str;
 
 use http::methods::Method;
-use http::client::HttpClient;
+use http::client::*;
 
 fn main() {
 	let mut http = HttpClient::new("www.google.com:80").unwrap();

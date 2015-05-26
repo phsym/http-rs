@@ -1,7 +1,7 @@
 //! Http I/O streams definitions
 
 use std::net::{ToSocketAddrs, TcpStream};
-use std::io::{Error, Read, Write};
+use std::io::{Error, ErrorKind, Read, Write};
 
 /// Represent a type that can be opened (ie connected) to a remote `SocketAddress`
 pub trait Open {
@@ -30,9 +30,15 @@ impl Stream for HttpsStream{}
 
 impl Open for HttpsStream {
 	fn open<A: ToSocketAddrs>(addr: A) -> Result<HttpsStream, Error> {
-		let ctx = SslContext::new(SslMethod::Tlsv1).unwrap();
+		let ctx = match SslContext::new(SslMethod::Tlsv1) {
+			Ok(c) => c,
+			Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot create SSL context : {}", e)))
+		};
 		let sock = try!(TcpStream::connect(addr));
-		let stream = SslStream::new(&ctx, sock).unwrap();
+		let stream = match SslStream::new(&ctx, sock) {
+			Ok(s) => s,
+			Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot create SSL stream : {}", e)))
+		};
 		return Ok(stream);
 	}
 }

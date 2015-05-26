@@ -9,12 +9,12 @@
 * Manage http-auth
 
 ## Improvements :
-* Abstract HTTP clients class implementations
+* Abstract HTTP clients struct implementations
 * Optimize header management when sending requests (quite heavy for now when cloning)
-* In Streams open methods : Better manage error by replacing calls to unwrap()
+* Use a struct for wrapping requests
 
 ## General :
-* Learn how to do testing, and add some
+* Learn how to do unit testing in Rust, and add some
 * Remove main.rs and only use examples, tests, and doc tests
 * Improve modules layout
 * Improve documentation

@@ -11,6 +11,7 @@
 ## Improvements :
 * Optimize header management when sending requests (quite heavy for now to clone a hashmap)
 * Use a struct for wrapping requests
+* Optimize BufReader and BufWriter usage in Http client implementation
 
 ## General :
 * Learn how to do unit testing in Rust, and add some

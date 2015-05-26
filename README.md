@@ -50,4 +50,19 @@ fn main() {
 }
 ```
 
+If you want to create an HTTP client hiding which implementation is used (either HttpClient or HttpsClient), you
+can get a boxed `Http` trait with the `http::open` function like this :
+
+```rust
+#[macro_use] extern crate http;
+use http::{Protocol, open};
+
+fn main {
+	let mut http = open(Protocol::HTTP, "www.google.com:80").unwrap();
+	// Do something with http
+	let mut https = open(Protocol::HTTPS, "www.google.com:443").unwrap();
+	// Do something with https;
+}
+```
+
 Additional examples are provided in documentation and in [examples](./examples/) directory

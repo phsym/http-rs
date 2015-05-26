@@ -18,14 +18,30 @@ pub trait HttpSend {
 	/// When done, don't forget to call `flush()` on the `BufWriter` in order to flush all the buffer
 	fn send_stream(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>) -> Result<BufWriter<&mut Write>, Error>;
 	
+	/// Get the reply from stream. Must be called only after a request has been sent
+	fn get_reply(&mut self) -> Result<HttpReply<&mut Read>, Error>;
+	
 	/// Send a full request and return the `HttpReply`.
 	///
 	/// If some `data` are provided, they are written to the request body, and the corresponding
 	/// `Content-Lenth` header is inserted nto request's properties
-	fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<&mut Read>, Error>;
-	
-	/// Get the reply from stream. Must be called only after a request has been sent
-	fn get_reply(&mut self) -> Result<HttpReply<&mut Read>, Error>;
+	fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<&mut Read>, Error> {
+		{
+			let mut hdr = match header {
+				Some(h) => h.clone(),
+				None => HashMap::new()
+			};
+			if let Some(d) = data {
+				hdr.insert(properties::CONTENT_LENGTH.to_string(), d.len().to_string());
+			}
+			let mut writer = try!(self.send_stream(method, path, Some(&hdr)));
+			if let Some(d) = data {
+				try!(writer.write(d));
+			}
+			try!(writer.flush());
+		}
+		return self.get_reply();
+	}
 }
 
 
@@ -153,24 +169,6 @@ impl <S: Stream> HttpSend for BaseClient<S>	{
 			None => return Err(Error::new(ErrorKind::NotConnected, "Cannot get reply since no stream is opened"))
 		};
 		return HttpReply::parse(BufReader::new(stream));
-	}
-	
-	fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<&mut Read>, Error> {
-		{
-			let mut hdr = match header {
-				Some(h) => h.clone(),
-				None => HashMap::new()
-			};
-			if let Some(d) = data {
-				hdr.insert(properties::CONTENT_LENGTH.to_string(), d.len().to_string());
-			}
-			let mut writer = try!(self.send_stream(method, path, Some(&hdr)));
-			if let Some(d) = data {
-				try!(writer.write(d));
-			}
-			try!(writer.flush());
-		}
-		return self.get_reply();
 	}
 }
 

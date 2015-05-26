@@ -12,7 +12,7 @@ macro_rules! option {
 /// This macro is quite similar to the `vec!` macro but is used to build
 /// a `HashMap`. The types will be deduced from the arguments.
 /// # Example
-/// ```ignore
+/// ```no_run
 /// # #[macro_use] extern crate http;
 /// # use std::collections::HashMap;
 /// # fn main() {
@@ -45,7 +45,7 @@ macro_rules! map {
 /// The message will be formated with its additional arguments with `format!` macro and will
 /// contain a header with file name and line number
 /// # Example
-/// ```ignore
+/// ```no_run
 /// # #[macro_use] extern crate http;
 /// # fn main() {
 /// debug!("This is a debug message");

@@ -1,4 +1,4 @@
-//! Crates with everything needed to run basic HTTP requests
+//! Low level HTTP toolkit library
 extern crate openssl;
 mod http;
 pub use http::*;

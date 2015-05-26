@@ -3,9 +3,9 @@
 use std::io::prelude::*;
 use std::str;
 
-//#[macro_use]pub mod http;
 use http::methods::Method;
 use http::client::*;
+//use http::{open, Protocol};
 
 #[allow(dead_code)]
 fn main() {

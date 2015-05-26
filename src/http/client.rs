@@ -29,7 +29,7 @@ pub trait HttpSend {
 }
 
 
-
+/// Represent object with properties. Provides methods for accessing those properties
 pub trait WithHeader {
 	/// Get a property from client permanent header
 	fn get_property(&self, key: &String) -> Option<&String>;
@@ -47,6 +47,7 @@ pub trait WithHeader {
 	fn iter(&self) -> Iter<String, String>;
 }
 
+/// Represent and Http object with send capability and properties in header
 pub trait Http: HttpSend+WithHeader{}
 
 /// A simple and low-level HTTP client implementation

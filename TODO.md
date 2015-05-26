@@ -9,8 +9,7 @@
 * Manage http-auth
 
 ## Improvements :
-* Abstract HTTP clients struct implementations
-* Optimize header management when sending requests (quite heavy for now when cloning)
+* Optimize header management when sending requests (quite heavy for now to clone a hashmap)
 * Use a struct for wrapping requests
 
 ## General :

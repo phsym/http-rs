@@ -4,8 +4,10 @@ name = "http-rs"
 version = "0.0.1"
 description = "A simple and low level http/https client toolkit"
 repository = "https://github.com/phsym/http-rs"
+homepage = "http://phsym.github.io/http-rs/"
+documentation = "http://phsym.github.io/http-rs/doc/"
 readme = "README.md"
-keywords = ["http", "https"]
+keywords = ["http", "https", "client"]
 authors = [ "Pierre-Henri Symoneaux" ]
 license = "BSD-3-Clause"
 

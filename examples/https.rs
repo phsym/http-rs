@@ -6,6 +6,7 @@ use std::str;
 use http::methods::Method;
 use http::client::*;
 
+#[cfg(feature="ssl")]
 fn main() {
 	let mut http = HttpsClient::new("www.google.com:443").unwrap();
 	http.set_property(str!("perm"), str!("test"));
@@ -29,4 +30,9 @@ fn main() {
 		},
 		Err(ref e) => panic!("Cannot send request : {}", e)
 	}
+}
+
+#[cfg(not(feature="ssl"))]
+fn main() {
+	panic!("ssl feature not enabled");
 }

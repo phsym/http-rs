@@ -1,7 +1,6 @@
 # TODO list
 
 ## Features :
-* Make openssl optional through feature
 * Manage keep-alive / disconnections / reconnections
 * Use of "url" library
 * Use of "mime" library
@@ -18,4 +17,7 @@
 * Remove main.rs and only use examples, tests, and doc tests
 * Improve modules layout
 * Improve documentation
+
+## Travis-CI :
 * Automatically publish API documentation with travis after each successfull build
+* Build / Test with and without SSL support

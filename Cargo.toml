@@ -11,8 +11,13 @@ keywords = ["http", "https", "client"]
 authors = [ "Pierre-Henri Symoneaux" ]
 license = "BSD-3-Clause"
 
-[dependencies]
+[features]
+default = ["ssl"]
+ssl = ["openssl"]
+
+[dependencies.openssl]
 openssl = "*"
+optional = true
 
 [[bin]]
 name = "http-rs"

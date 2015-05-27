@@ -16,7 +16,24 @@ I advise you to have a look at [Teepee](http://teepee.rs/) or at [Hyper](https:/
 Please consider that **no design is stable for now here**. I'm just a rust noob who still have a lot to learn on this beautifull new language.
 
 # How to build
+
+The library had an optional "ssl" feature that enable HTTPS over SSL. SSL support is enabled by default but can be disabled if not needed.
+SSL support is depends on [rust-openssl](https://github.com/sfackler/rust-openssl) which requires both the OpenSSL runtime libraries and headers to be built.
+
+## Without SSL support
 As usual with Cargo project, simply run
+
+> cargo build --no-default-features
+
+And to build html documentation, run
+
+> cargo doc --no-default-features
+
+## With SSL support
+Building with SSL support require beeing able to build [rust-openssl](https://github.com/sfackler/rust-openssl).
+Also, gcc will be required.
+Please have a look on [rust-openssl](https://github.com/sfackler/rust-openssl) and [gcc-rs](https://github.com/alexcrichton/gcc-rs) README files for detailed information about building opennssl.
+If environment configuration satisfies everything neede to buil SSL support, then to buil simply run
 
 > cargo build
 
@@ -30,6 +47,8 @@ More often, you will include the library as a dependency to your project. In ord
 ```toml
 [dependencies.http-rs]
 git = "https://github.com/phsym/http-rs.git"
+# To disable SSL support, default features need to be disabled by uncommenting the following line
+# default-features = false
 
 ```
 
@@ -37,7 +56,7 @@ Then you can start using it the following way :
 
 ```rust
 #[macro_use] extern crate http;
-use http::client::{HttpClient, HttpsClient};
+use http::client::*;
 use http::methods::Method;
 
 fn main() {

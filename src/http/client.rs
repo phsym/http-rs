@@ -75,7 +75,8 @@ struct BaseClient<S: Stream> {
 
 /// Client for unsecured HTTP
 pub type HttpClient = BaseClient<HttpStream>;
-/// Client for secured HTTP
+/// Client for secured HTTP. Only available if "ssl" feature is enabled
+#[cfg(feature="ssl")]
 pub type HttpsClient = BaseClient<HttpsStream>;
 
 impl <S: Stream> BaseClient<S> {
@@ -110,7 +111,7 @@ impl <S: Stream> BaseClient<S> {
 		return hdr;
 	}
 	
-	/// Open an `HttpStream` to remote host
+	/// Open an connection to remote host
 	fn connect(&mut self) -> Result<&mut S, Error> {
 		self.stream = Some(try!(S::open(self.addr)));
 		return Ok(self.stream.as_mut().unwrap());

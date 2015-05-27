@@ -1,7 +1,9 @@
 //! Http I/O streams definitions
 
 use std::net::{ToSocketAddrs, TcpStream};
-use std::io::{Error, ErrorKind, Read, Write};
+use std::io::{Error, Read, Write};
+#[cfg(feature="ssl")]
+use std::io::ErrorKind;
 
 /// Represent a type that can be opened (ie connected) to a remote `SocketAddress`
 pub trait Open {
@@ -22,12 +24,16 @@ impl Open for HttpStream {
 	}
 }
 
+#[cfg(feature="ssl")]
 use openssl::ssl::{SslContext, SslStream, SslMethod};
 
-/// HttpsStream for secured HTTPS Input/Output
+/// HttpsStream for secured HTTPS Input/Output. Only available if "ssl" feature is enabled
+#[cfg(feature="ssl")]
 pub type HttpsStream = SslStream<TcpStream>;
+#[cfg(feature="ssl")]
 impl Stream for HttpsStream{}
 
+#[cfg(feature="ssl")]
 impl Open for HttpsStream {
 	fn open<A: ToSocketAddrs>(addr: A) -> Result<HttpsStream, Error> {
 		let ctx = match SslContext::new(SslMethod::Tlsv1) {

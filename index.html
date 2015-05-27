@@ -44,7 +44,31 @@ Please consider that <strong>no design is stable for now here</strong>. I'm just
 <h1>
 <a id="how-to-build" class="anchor" href="#how-to-build" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to build</h1>
 
+<p>The library had an optional "ssl" feature that enable HTTPS over SSL. SSL support is enabled by default but can be disabled if not needed.
+SSL support is depends on <a href="https://github.com/sfackler/rust-openssl">rust-openssl</a> which requires both the OpenSSL runtime libraries and headers to be built.</p>
+
+<h2>
+<a id="without-ssl-support" class="anchor" href="#without-ssl-support" aria-hidden="true"><span class="octicon octicon-link"></span></a>Without SSL support</h2>
+
 <p>As usual with Cargo project, simply run</p>
+
+<blockquote>
+<p>cargo build --no-default-features</p>
+</blockquote>
+
+<p>And to build html documentation, run</p>
+
+<blockquote>
+<p>cargo doc --no-default-features</p>
+</blockquote>
+
+<h2>
+<a id="with-ssl-support" class="anchor" href="#with-ssl-support" aria-hidden="true"><span class="octicon octicon-link"></span></a>With SSL support</h2>
+
+<p>Building with SSL support require beeing able to build <a href="https://github.com/sfackler/rust-openssl">rust-openssl</a>.
+Also, gcc will be required.
+Please have a look on <a href="https://github.com/sfackler/rust-openssl">rust-openssl</a> and <a href="https://github.com/alexcrichton/gcc-rs">gcc-rs</a> README files for detailed information about building opennssl.
+If environment configuration satisfies everything neede to buil SSL support, then to buil simply run</p>
 
 <blockquote>
 <p>cargo build</p>
@@ -63,12 +87,14 @@ Please consider that <strong>no design is stable for now here</strong>. I'm just
 
 <div class="highlight highlight-toml"><pre>[<span class="pl-en">dependencies</span>.<span class="pl-en">http-rs</span>]
 <span class="pl-smi">git</span> = <span class="pl-s"><span class="pl-pds">"</span>https://github.com/phsym/http-rs.git<span class="pl-pds">"</span></span>
+<span class="pl-c"># To disable SSL support, default features need to be disabled by uncommenting the following line</span>
+<span class="pl-c"># default-features = false</span>
 </pre></div>
 
 <p>Then you can start using it the following way :</p>
 
 <div class="highlight highlight-rust"><pre><span class="pl-c">#[macro_use]</span> <span class="pl-k">extern crate</span> <span class="pl-c1">http</span><span class="pl-k">;</span>
-<span class="pl-k">use</span> http::client::{HttpClient<span class="pl-k">,</span> HttpsClient}<span class="pl-k">;</span>
+<span class="pl-k">use</span> http::client::<span class="pl-k">*;</span>
 <span class="pl-k">use</span> http::methods::Method<span class="pl-k">;</span>
 
 <span class="pl-k">fn</span> <span class="pl-en">main</span>() {

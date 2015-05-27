@@ -96,7 +96,8 @@
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Protocol</span> {
 	<span class='doccomment'>/// Unsecured HTTP</span>
 	<span class='ident'>HTTP</span>,
-	<span class='doccomment'>/// Secured HTTP</span>
+	<span class='doccomment'>/// Secured HTTP. Only available with &quot;ssl&quot; feature</span>
+	<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;ssl&quot;</span>)]</span>
 	<span class='ident'>HTTPS</span>,
 }
 
@@ -108,15 +109,14 @@
 <span class='doccomment'>/// use http::{open, Protocol};</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// let mut http = open(Protocol::HTTP, &quot;www.google.com:80&quot;).unwrap();</span>
+<span class='doccomment'>/// // If ssl feature is enabled, Protocol::HTTPS van be used to open a secured connection if &quot;ssl&quot; feature is enabled</span>
 <span class='doccomment'>/// // Do something with http</span>
 <span class='doccomment'>/// # drop(http);</span>
-<span class='doccomment'>/// let mut https = open(Protocol::HTTPS, &quot;www.google.com:443&quot;).unwrap();</span>
-<span class='doccomment'>/// // Do something with https;</span>
-<span class='doccomment'>/// # drop(https);</span>
 <span class='doccomment'>/// ```</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>open</span><span class='op'>&lt;</span><span class='ident'>A</span>: <span class='ident'>ToSocketAddrs</span><span class='op'>&gt;</span>(<span class='ident'>protocol</span>: <span class='ident'>Protocol</span>, <span class='ident'>addr</span>: <span class='ident'>A</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Http</span><span class='op'>&gt;</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
 	<span class='kw'>let</span> <span class='ident'>cli</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Http</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>protocol</span> {
 		<span class='ident'>Protocol</span>::<span class='ident'>HTTP</span> <span class='op'>=&gt;</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>HttpClient</span>::<span class='ident'>new</span>(<span class='ident'>addr</span>))),
+		<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;ssl&quot;</span>)]</span>
 		<span class='ident'>Protocol</span>::<span class='ident'>HTTPS</span> <span class='op'>=&gt;</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>HttpsClient</span>::<span class='ident'>new</span>(<span class='ident'>addr</span>)))
 	};
 	<span class='kw'>return</span> <span class='prelude-val'>Ok</span>(<span class='ident'>cli</span>);

@@ -44,8 +44,16 @@
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
+<span id="5">5</span>
+<span id="6">6</span>
+<span id="7">7</span>
+<span id="8">8</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Low level HTTP toolkit library</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! Feature &quot;ssl&quot; enable secured connection support with openssl.</span>
+<span class='doccomment'>//! This feature is enabled by default but can be disabled</span>
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;ssl&quot;</span>)]</span>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>openssl</span>;
 <span class='kw'>mod</span> <span class='ident'>http</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>http</span>::<span class='op'>*</span>;

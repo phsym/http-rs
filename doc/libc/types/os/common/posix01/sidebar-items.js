@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["timezone",""]],"struct":[["stat",""],["timespec",""],["timeval",""],["utimbuf",""]]});
+initSidebarItems({"struct":[["stat",""],["timespec",""],["timeval",""],["utimbuf",""]],"enum":[["timezone",""]]});

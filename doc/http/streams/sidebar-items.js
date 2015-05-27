@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Open","Represent a type that can be opened (ie connected) to a remote `SocketAddress`"],["Stream","A trait representing an openable read/write stream"]],"type":[["HttpStream","HttpStream for unsecured HTTP Input/Output"],["HttpsStream","HttpsStream for secured HTTPS Input/Output"]]});

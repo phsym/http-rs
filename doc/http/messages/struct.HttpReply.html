@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `HttpReply` struct in crate `http`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, HttpReply">
+
+    <title>http::messages::HttpReply - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../index.html'>http</a>::<wbr><a href='index.html'>messages</a></p><script>window.sidebarCurrent = {name: 'HttpReply', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>http</a>::<wbr><a href='index.html'>messages</a>::<wbr><a class='struct' href=''>HttpReply</a><wbr></span><span class='out-of-band'><span id='render-detail'>
+            <a id="collapse-all" href="#">[-]</a>&nbsp;<a id="expand-all" href="#">[+]</a>
+        </span><a id='src-967' href='../../src/http/http/messages.rs.html#16-22'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct HttpReply&lt;T: <a class='trait' href='http://doc.rust-lang.org/nightly/std/io/trait.Read.html' title='std::io::Read'>Read</a>&gt; {
+    // some fields omitted
+}</pre><div class='docblock'><p>A structure that represents an HTTP reply</p>
+
+<p>It contains an already parsed header information, and offers
+a <code>BufReader&lt;T&gt;</code> to read reply content</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;T: <a class='trait' href='http://doc.rust-lang.org/nightly/std/io/trait.Read.html' title='std::io::Read'>Read</a>&gt; <a class='struct' href='../../http/messages/struct.HttpReply.html' title='http::messages::HttpReply'>HttpReply</a>&lt;T&gt;</code></h3><div class='impl-items'><h4 id='method.parse' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.parse' class='fnname'>parse</a>(reader: <a class='struct' href='http://doc.rust-lang.org/nightly/std/io/buffered/struct.BufReader.html' title='std::io::buffered::BufReader'>BufReader</a>&lt;T&gt;) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../../http/messages/struct.HttpReply.html' title='http::messages::HttpReply'>HttpReply</a>&lt;T&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/std/io/error/struct.Error.html' title='std::io::error::Error'>Error</a>&gt;</code></h4>
+<div class='docblock'><p>Contruct a new HttpReply by parsing the input from <code>reader</code></p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>TcpStream</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>BufReader</span>;
+<span class='kw'>use</span> <span class='ident'>http</span>::<span class='ident'>messages</span>::<span class='ident'>HttpReply</span>;
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>socket</span> <span class='op'>=</span> <span class='ident'>TcpStream</span>::<span class='ident'>connect</span>(<span class='string'>&quot;host_address:port&quot;</span>).<span class='ident'>unwrap</span>();
+<span class='comment'>// Do some stuff with socket and assume an http reply is coming</span>
+<span class='kw'>let</span> <span class='ident'>reader</span> <span class='op'>=</span> <span class='ident'>BufReader</span>::<span class='ident'>new</span>(<span class='ident'>socket</span>);
+<span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>HttpReply</span>::<span class='ident'>parse</span>(<span class='ident'>reader</span>).<span class='ident'>unwrap</span>();
+</pre>
+</div><h4 id='method.get_length' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.get_length' class='fnname'>get_length</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, <a class='struct' href='http://doc.rust-lang.org/nightly/std/io/error/struct.Error.html' title='std::io::error::Error'>Error</a>&gt;</code></h4>
+<div class='docblock'><p>Get the <code>Content-Length</code> property from header</p>
+</div><h4 id='method.get_reader' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.get_reader' class='fnname'>get_reader</a>(&amp;mut self) -&gt; &amp;mut <a class='struct' href='http://doc.rust-lang.org/nightly/std/io/buffered/struct.BufReader.html' title='std::io::buffered::BufReader'>BufReader</a>&lt;T&gt;</code></h4>
+<div class='docblock'><p>Return a <code>BufReader</code> to read the reply&#39;s content</p>
+</div><h4 id='method.get_version' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.get_version' class='fnname'>get_version</a>(&amp;self) -&gt; &amp;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code></h4>
+<div class='docblock'><p>Get the HTTP version from reply. Returns a string like <code>&quot;HTTP/1.0&quot;</code></p>
+</div><h4 id='method.get_code' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.get_code' class='fnname'>get_code</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></h4>
+<div class='docblock'><p>Get the status code from reply</p>
+</div><h4 id='method.get_status' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.get_status' class='fnname'>get_status</a>(&amp;self) -&gt; &amp;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code></h4>
+<div class='docblock'><p>Get the status text from reply</p>
+</div><h4 id='method.get_property' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.get_property' class='fnname'>get_property</a>(&amp;self, key: &amp;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt;</code></h4>
+<div class='docblock'><p>Get a property from reply header</p>
+</div><h4 id='method.get_properties_name' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.get_properties_name' class='fnname'>get_properties_name</a>(&amp;self) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/std/collections/hash/map/struct.Keys.html' title='std::collections::hash::map::Keys'>Keys</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, <a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt;</code></h4>
+<div class='docblock'><p>Return an iterator over properties names set in reply header</p>
+</div><h4 id='method.iter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.iter' class='fnname'>iter</a>(&amp;self) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/std/collections/hash/map/struct.Iter.html' title='std::collections::hash::map::Iter'>Iter</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, <a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt;</code></h4>
+<div class='docblock'><p>Return an iterator over properties from reply header</p>
+</div><h4 id='method.read_all' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_all' class='fnname'>read_all</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/std/io/error/struct.Error.html' title='std::io::error::Error'>Error</a>&gt;</code></h4>
+<div class='docblock'><p>Read all the reply content into a buffer and return this buffer</p>
+</div><h4 id='method.read_string' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.read_string' class='fnname'>read_string</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, <a class='struct' href='http://doc.rust-lang.org/nightly/std/io/error/struct.Error.html' title='std::io::error::Error'>Error</a>&gt;</code></h4>
+<div class='docblock'><p>Read all the repl and return it into a <code>String</code></p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;'r, T: <a class='trait' href='http://doc.rust-lang.org/nightly/std/io/trait.Read.html' title='std::io::Read'>Read</a>&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../../http/messages/struct.HttpReply.html' title='http::messages::HttpReply'>HttpReply</a>&lt;T&gt;</code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class='struct' href='http://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+</div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;'r, T: <a class='trait' href='http://doc.rust-lang.org/nightly/std/io/trait.Read.html' title='std::io::Read'>Read</a>&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='struct' href='../../http/messages/struct.HttpReply.html' title='http::messages::HttpReply'>HttpReply</a>&lt;T&gt;</code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#method.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class='struct' href='http://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "http";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

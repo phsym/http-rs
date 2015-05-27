@@ -31,7 +31,7 @@ pub enum Protocol {
 /// // Do something with https;
 /// # drop(https);
 /// ```
-pub fn open<'a, A: ToSocketAddrs>(protocol: Protocol, addr: A) -> Result<Box<Http>, Error> {
+pub fn open<A: ToSocketAddrs>(protocol: Protocol, addr: A) -> Result<Box<Http>, Error> {
 	let cli: Box<Http> = match protocol {
 		Protocol::HTTP => Box::new(try!(HttpClient::new(addr))),
 		Protocol::HTTPS => Box::new(try!(HttpsClient::new(addr)))

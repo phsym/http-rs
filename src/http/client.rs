@@ -24,7 +24,7 @@ pub trait HttpSend {
 	/// Send a full request and return the `HttpReply`.
 	///
 	/// If some `data` are provided, they are written to the request body, and the corresponding
-	/// `Content-Lenth` header is inserted nto request's properties
+	/// `Content-Lenth` header is inserted into request's properties
 	fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<&mut Read>, Error> {
 		{
 			let mut hdr = match header {
@@ -70,7 +70,7 @@ pub trait Http: HttpSend+WithHeader{}
 struct BaseClient<S: Stream> {
 	addr: SocketAddr,
 	header: HashMap<String, String>,
-	stream: Option<S>,
+	stream: Option<S>
 }
 
 /// Client for unsecured HTTP

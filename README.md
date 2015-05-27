@@ -1,6 +1,8 @@
 ![License](http://img.shields.io/badge/license-BSD-lightgrey.svg)
 [![Build Status](https://travis-ci.org/phsym/http-rs.svg)](https://travis-ci.org/phsym/http-rs)
 
+[Documentation](http://phsym.github.io/http-rs/doc)
+
 # http-rs
 
 *Copyright &copy; 2015 Pierre-Henri Symoneaux*

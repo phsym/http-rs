@@ -84,3 +84,38 @@ macro_rules! smap {
 		map!($(str!($key) => str!($val)), *)
 	)
 }
+
+/// Wrap all the given expressions in a `try!`
+///
+/// # Example
+/// ```no_run
+/// # #[macro_use] extern crate http;
+/// # use std::io::Error;
+/// fn do_something() -> Result<String, Error> {
+/// 	return Ok("Ok".to_string());
+/// }
+///
+/// # fn foo() -> Result<String, Error> {
+/// try_all! {
+/// 	do_something();
+/// 	do_something();
+/// 	do_something();
+/// };
+/// # return Ok("Ok".to_string());
+/// # }
+/// # fn main() {
+/// # foo().unwrap();
+/// # }
+/// ```
+#[macro_export]
+macro_rules! try_all {
+	(
+		$($expr:expr); *;
+	) => (
+		{
+			$(
+				try!($expr);
+			)*
+		}
+	)
+}

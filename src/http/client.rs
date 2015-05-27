@@ -146,17 +146,21 @@ impl <S: Stream> HttpSend for BaseClient<S>	{
 		let mut w = BufWriter::new(stream);
 		{
 			let mut writer = &mut w;
-			try!(writer.write(method.as_bytes()));
-			try!(writer.write(b" "));
-			try!(writer.write(path.as_bytes()));
-			try!(writer.write(b"\r\n"));
+			try_all!{
+				writer.write(method.as_bytes());
+				writer.write(b" ");
+				writer.write(path.as_bytes());
+				writer.write(b"\r\n");
+			};
 			
 			//Write header
 			for (k, v) in hdr {
-				try!(writer.write(k.as_bytes()));
-				try!(writer.write(b": "));
-				try!(writer.write(v.as_bytes()));
-				try!(writer.write(b"\r\n"));
+				try_all!{
+					writer.write(k.as_bytes());
+					writer.write(b": ");
+					writer.write(v.as_bytes());
+					writer.write(b"\r\n");
+				};
 			}
 			try!(writer.write(b"\r\n"));
 		}

@@ -12,7 +12,7 @@ use super::streams::*;
 
 /// Trait for object capable of sending HttpRequests
 pub trait HttpSend {
-	/// Start a new request and return `BufWriter` to the underlying stream
+	/// Start a new request and return a `BufWriter` to the underlying stream
 	/// so you can write the request body.
 	///
 	/// When done, don't forget to call `flush()` on the `BufWriter` in order to flush all the buffer
@@ -24,7 +24,7 @@ pub trait HttpSend {
 	/// Send a full request and return the `HttpReply`.
 	///
 	/// If some `data` are provided, they are written to the request body, and the corresponding
-	/// `Content-Lenth` header is inserted into request's properties
+	/// `Content-Lenth` header is inserted/updated into request's properties
 	fn send(&mut self, method: Method, path: &str, header: Option<&HashMap<String, String>>, data: Option<&[u8]>) -> Result<HttpReply<&mut Read>, Error> {
 		{
 			let mut hdr = match header {

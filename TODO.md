@@ -18,4 +18,4 @@
 * Remove main.rs and only use examples, tests, and doc tests
 * Improve modules layout
 * Improve documentation
-* Publish API documentation
+* Automatically publish API documentation with travis after each successfull build

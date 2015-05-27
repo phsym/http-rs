@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Http-rs by phsym</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Http-rs</h1>
+        <h2>For now, that&#39;s just a pet project so I can discover Rust. So nothing really usefull to find here. Maybe later ?</h2>
+        <a href="https://github.com/phsym/http-rs" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <p><img src="http://img.shields.io/badge/license-BSD-lightgrey.svg" alt="License">
+<a href="https://travis-ci.org/phsym/http-rs"><img src="https://travis-ci.org/phsym/http-rs.svg" alt="Build Status"></a></p>
+
+<h1>
+<a id="http-rs" class="anchor" href="#http-rs" aria-hidden="true"><span class="octicon octicon-link"></span></a>http-rs</h1>
+
+<p>A simple and low level http/https client toolkit written in Rust.
+This is just a pet project I use to discover and learn Rust. If you need a more complete and well supported HTTP library,
+I advise you to have a look at <a href="http://teepee.rs/">Teepee</a> or at <a href="https://github.com/hyperium/hyper">Hyper</a>.
+Please consider that <strong>no design is stable for now here</strong>. I'm just a rust noob who still have a lot to learn on this beautifull new language.</p>
+
+<h1>
+<a id="how-to-build" class="anchor" href="#how-to-build" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to build</h1>
+
+<p>As usual with Cargo project, simply run</p>
+
+<blockquote>
+<p>cargo build</p>
+</blockquote>
+
+<p>And to build html documentation, run</p>
+
+<blockquote>
+<p>cargo doc</p>
+</blockquote>
+
+<h1>
+<a id="how-to-use" class="anchor" href="#how-to-use" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to use</h1>
+
+<p>More often, you will include the library as a dependency to your project. In order to do this, add the following lines to your <strong>Cargo.toml</strong> file :</p>
+
+<div class="highlight highlight-toml"><pre>[<span class="pl-en">dependencies</span>.<span class="pl-en">http-rs</span>]
+<span class="pl-smi">git</span> = <span class="pl-s"><span class="pl-pds">"</span>https://github.com/phsym/http-rs.git<span class="pl-pds">"</span></span>
+</pre></div>
+
+<p>Then you can start using it the following way :</p>
+
+<div class="highlight highlight-rust"><pre><span class="pl-c">#[macro_use]</span> <span class="pl-k">extern crate</span> <span class="pl-c1">http</span><span class="pl-k">;</span>
+<span class="pl-k">use</span> http::client::{HttpClient<span class="pl-k">,</span> HttpsClient}<span class="pl-k">;</span>
+<span class="pl-k">use</span> http::methods::Method<span class="pl-k">;</span>
+
+<span class="pl-k">fn</span> <span class="pl-en">main</span>() {
+    <span class="pl-k">let</span> <span class="pl-k">mut </span><span class="pl-smi">http</span> <span class="pl-k">=</span> HttpClient::<span class="pl-c1">new</span>(<span class="pl-s">"www.google.com:80"</span>)<span class="pl-k">.</span><span class="pl-c1">unwrap</span>()<span class="pl-k">;</span>
+    <span class="pl-k">match</span> http<span class="pl-k">.</span><span class="pl-c1">send</span>(Method::GET<span class="pl-k">,</span> <span class="pl-k">/,</span> <span class="pl-c1">None</span><span class="pl-k">,</span> <span class="pl-c1">None</span>) {
+        <span class="pl-c1">Ok</span>(reply) <span class="pl-k">=&gt;</span> {}<span class="pl-k">,</span><span class="pl-c">// Do something with the reply</span>
+        <span class="pl-c1">Err</span>(e) <span class="pl-k">=&gt;</span> <span class="pl-c1">panic!</span>(<span class="pl-s">"Cannot send request : {}"</span><span class="pl-k">,</span> e)
+    }
+    <span class="pl-c">// The same is possible on HTTPS :</span>
+    <span class="pl-k">let</span> <span class="pl-k">mut </span><span class="pl-smi">https</span> <span class="pl-k">=</span> HttpsClient::<span class="pl-c1">new</span>(<span class="pl-s">"www.google.com:443"</span>)<span class="pl-k">.</span><span class="pl-c1">unwrap</span>()<span class="pl-k">;</span>
+    <span class="pl-c">// (...)</span>
+}</pre></div>
+
+<p>If you want to create an HTTP client hiding which implementation is used (either HttpClient or HttpsClient), you
+can get a boxed <code>Http</code> trait with the <code>http::open</code> function like this :</p>
+
+<div class="highlight highlight-rust"><pre><span class="pl-c">#[macro_use]</span> <span class="pl-k">extern crate</span> <span class="pl-c1">http</span><span class="pl-k">;</span>
+<span class="pl-k">use</span> http::{Protocol<span class="pl-k">,</span> open}<span class="pl-k">;</span>
+
+fn main {
+    <span class="pl-k">let</span> <span class="pl-k">mut </span><span class="pl-smi">http</span> <span class="pl-k">=</span> <span class="pl-c1">open</span>(Protocol::HTTP<span class="pl-k">,</span> <span class="pl-s">"www.google.com:80"</span>)<span class="pl-k">.</span><span class="pl-c1">unwrap</span>()<span class="pl-k">;</span>
+    <span class="pl-c">// Do something with http</span>
+    <span class="pl-k">let</span> <span class="pl-k">mut </span><span class="pl-smi">https</span> <span class="pl-k">=</span> <span class="pl-c1">open</span>(Protocol::HTTPS<span class="pl-k">,</span> <span class="pl-s">"www.google.com:443"</span>)<span class="pl-k">.</span><span class="pl-c1">unwrap</span>()<span class="pl-k">;</span>
+    <span class="pl-c">// Do something with https;</span>
+}</pre></div>
+
+<p>Additional examples are provided in documentation and in examples directory</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/phsym/http-rs/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/phsym/http-rs/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/phsym/http-rs"></a> is maintained by <a href="https://github.com/phsym">phsym</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>

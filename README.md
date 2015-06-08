@@ -33,7 +33,7 @@ And to build html documentation, run
 Building with SSL support require beeing able to build [rust-openssl](https://github.com/sfackler/rust-openssl).
 Also, gcc will be required.
 Please have a look on [rust-openssl](https://github.com/sfackler/rust-openssl) and [gcc-rs](https://github.com/alexcrichton/gcc-rs) README files for detailed information about building opennssl.
-If environment configuration satisfies everything neede to buil SSL support, then to buil simply run
+If environment configuration satisfies everything needed to build SSL support, then to build simply run
 
 > cargo build
 

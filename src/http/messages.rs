@@ -137,7 +137,7 @@ impl <T: Read> HttpReply<T> {
 	}
 }
 
-impl <'r, T: Read> fmt::Debug for HttpReply<T> {
+impl <T: Read> fmt::Debug for HttpReply<T> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		try!((self as &fmt::Display).fmt(f));
 		try!(writeln!(f, "\n\tProperties : "));
@@ -148,7 +148,7 @@ impl <'r, T: Read> fmt::Debug for HttpReply<T> {
 	}
 }
 
-impl <'r, T: Read> fmt::Display for HttpReply<T> {
+impl <T: Read> fmt::Display for HttpReply<T> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		try!(writeln!(f, "\tversion = {}", self.get_version()));
 		try!(writeln!(f, "\tcode = {}", self.get_code()));

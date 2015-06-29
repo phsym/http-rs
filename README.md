@@ -17,8 +17,8 @@ Please consider that **no design is stable for now here**. I'm just a rust noob 
 
 # How to build
 
-The library had an optional "ssl" feature that enable HTTPS over SSL. SSL support is enabled by default but can be disabled if not needed.
-SSL support is depends on [rust-openssl](https://github.com/sfackler/rust-openssl) which requires both the OpenSSL runtime libraries and headers to be built.
+The library has an optional "ssl" feature that enable HTTPS over SSL. SSL support is enabled by default but can be disabled if not needed.
+SSL support depends on [rust-openssl](https://github.com/sfackler/rust-openssl) which requires both the OpenSSL runtime libraries and headers to be built.
 
 ## Without SSL support
 As usual with Cargo project, simply run

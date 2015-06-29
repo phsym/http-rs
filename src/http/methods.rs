@@ -5,7 +5,12 @@ pub enum Method {
 	GET,
 	POST,
 	PUT,
-	DELETE
+	DELETE,
+	HEAD,
+	TRACE,
+	OPTIONS,
+	PATCH,
+	CONNECT
 }
 
 impl Method {
@@ -15,7 +20,12 @@ impl Method {
 			Method::GET => "GET",
 			Method::POST => "POST",
 			Method::PUT => "PUT",
-			Method::DELETE => "DELETE"
+			Method::DELETE => "DELETE",
+			Method::HEAD => "HEAD",
+			Method::TRACE => "TRACE",
+			Method::OPTIONS => "OPTIONS",
+			Method::PATCH => "PATCH",
+			Method::CONNECT => "CONNECT"
 		}
 	}
 	

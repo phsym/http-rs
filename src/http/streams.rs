@@ -6,7 +6,7 @@ use std::io::{Error, Read, Write};
 use std::io::ErrorKind;
 
 /// Represent a type that can be opened (ie connected) to a remote `SocketAddress`
-pub trait Open {
+pub trait Open: Sized {
 	/// Create a new Instance of `Self` connected to `addr`
 	fn open<A: ToSocketAddrs>(addr: A) -> Result<Self, Error>;
 }

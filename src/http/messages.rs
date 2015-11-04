@@ -34,9 +34,9 @@ impl <T: Read> HttpReply<T> {
 	/// let r = HttpReply::parse(reader).unwrap();
 	/// ```
 	pub fn parse(mut reader: BufReader<T>) -> Result<HttpReply<T>, Error> {
-		let mut code: u32;
-		let mut version: String;
-		let mut status: String;
+		let code: u32;
+		let version: String;
+		let status: String;
 		let mut header = HashMap::new();
 		{
 			let mut line = String::new();

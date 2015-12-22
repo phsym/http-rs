@@ -41,7 +41,7 @@ impl Open for HttpsStream {
 			Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot create SSL context : {}", e)))
 		};
 		let sock = try!(TcpStream::connect(addr));
-		let stream = match SslStream::new(&ctx, sock) {
+		let stream = match SslStream::connect(&ctx, sock) {
 			Ok(s) => s,
 			Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot create SSL stream : {}", e)))
 		};

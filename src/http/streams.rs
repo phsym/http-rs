@@ -25,7 +25,7 @@ impl Open for HttpStream {
 }
 
 #[cfg(feature="ssl")]
-use openssl::ssl::{SslStream, SslMethod, SslConnectorBuilder};
+use openssl::ssl::{SslStream, SslMethod, SslConnectorBuilder, SslVerifyMode};
 
 /// HttpsStream for secured HTTPS Input/Output. Only available if "ssl" feature is enabled
 #[cfg(feature="ssl")]
@@ -37,11 +37,13 @@ impl Stream for HttpsStream{}
 impl Open for HttpsStream {
 	fn open<A: ToSocketAddrs>(addr: A) -> Result<HttpsStream, Error> {
 		let sock = try!(TcpStream::connect(addr));
-		let builder = match SslConnectorBuilder::new(SslMethod::tls()) {
-			Ok(s) => s.build(),
-			Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot create SSL stream : {}", e)))
+		let mut builder = match SslConnectorBuilder::new(SslMethod::tls()) {
+			Ok(s) => s,
+			Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot create SSL connector : {}", e)))
 		};
-		let stream = match builder.danger_connect_without_providing_domain_for_certificate_verification_and_server_name_indication(sock) {
+		//TODO: Do not skip verifications
+		builder.builder_mut().set_verify(SslVerifyMode::empty());
+		let stream = match builder.build().danger_connect_without_providing_domain_for_certificate_verification_and_server_name_indication(sock) {
 			Ok(s) => s,
 			Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot create SSL stream : {}", e)))
 		};

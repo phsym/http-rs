@@ -25,7 +25,7 @@ impl Open for HttpStream {
 }
 
 #[cfg(feature="ssl")]
-use openssl::ssl::{SslContext, SslStream, SslMethod};
+use openssl::ssl::{SslStream, SslMethod, SslConnectorBuilder};
 
 /// HttpsStream for secured HTTPS Input/Output. Only available if "ssl" feature is enabled
 #[cfg(feature="ssl")]
@@ -36,12 +36,12 @@ impl Stream for HttpsStream{}
 #[cfg(feature="ssl")]
 impl Open for HttpsStream {
 	fn open<A: ToSocketAddrs>(addr: A) -> Result<HttpsStream, Error> {
-		let ctx = match SslContext::new(SslMethod::Tlsv1) {
-			Ok(c) => c,
-			Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot create SSL context : {}", e)))
-		};
 		let sock = try!(TcpStream::connect(addr));
-		let stream = match SslStream::connect(&ctx, sock) {
+		let builder = match SslConnectorBuilder::new(SslMethod::tls()) {
+			Ok(s) => s.build(),
+			Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot create SSL stream : {}", e)))
+		};
+		let stream = match builder.danger_connect_without_providing_domain_for_certificate_verification_and_server_name_indication(sock) {
 			Ok(s) => s,
 			Err(e) => return Err(Error::new(ErrorKind::Other, format!("Cannot create SSL stream : {}", e)))
 		};

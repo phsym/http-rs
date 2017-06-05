@@ -11,8 +11,7 @@
 > Check LICENSE.txt file for more information. <br>
 
 A simple and low level http/https client toolkit written in Rust.
-This is just a pet project I use to discover and learn Rust. If you need a more complete and well supported HTTP library,
-I advise you to have a look at [Teepee](http://teepee.rs/) or at [Hyper](https://github.com/hyperium/hyper).
+This is just a pet project I used to discover and learn Rust. I advise you to have a look at [Hyper](https://github.com/hyperium/hyper) instead.
 Please consider that **no design is stable for now here**. I'm just a rust noob who still have a lot to learn on this beautifull new language.
 
 # How to build
